@@ -1,0 +1,190 @@
+{
+  "project_info": {
+    "project_number": "981372260989",
+    "project_id": "oceanic-base-250909",
+    "storage_bucket": "oceanic-base-250909.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981372260989:android:7921c8d1433b427eaf9714",
+        "android_client_info": {
+          "package_name": "com.example.flutter_blueprint"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD294vcxfsXcT9BWUxzFH3FrwlPMRDc0E0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "981372260989-dmbvrov4vp48714hu27gimpfn400s1rj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.giapsoft.remyset"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981372260989:android:2c30b7a8ea935f7daf9714",
+        "android_client_info": {
+          "package_name": "com.example.learning_architecture"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD294vcxfsXcT9BWUxzFH3FrwlPMRDc0E0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "981372260989-dmbvrov4vp48714hu27gimpfn400s1rj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.giapsoft.remyset"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981372260989:android:bd78a72528868507af9714",
+        "android_client_info": {
+          "package_name": "com.example.tankdrum_learning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD294vcxfsXcT9BWUxzFH3FrwlPMRDc0E0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "981372260989-dmbvrov4vp48714hu27gimpfn400s1rj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.giapsoft.remyset"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981372260989:android:67cb7d9b234f403faf9714",
+        "android_client_info": {
+          "package_name": "com.giapsoft.memo4me"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD294vcxfsXcT9BWUxzFH3FrwlPMRDc0E0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "981372260989-dmbvrov4vp48714hu27gimpfn400s1rj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.giapsoft.remyset"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981372260989:android:21920ceb82814ec6af9714",
+        "android_client_info": {
+          "package_name": "net.tientot.tientot_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD294vcxfsXcT9BWUxzFH3FrwlPMRDc0E0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981372260989-pau5d1glov63th1b7n27udit77r2pppc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "981372260989-dmbvrov4vp48714hu27gimpfn400s1rj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.giapsoft.remyset"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

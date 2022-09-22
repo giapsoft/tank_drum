@@ -1,61 +1,57 @@
-import 'package:flutter/material.dart';
-import 'package:tankdrum_learning/songs/music_note_lib.dart';
-import 'package:tankdrum_learning/drums/common/select_play_mode_btn.dart';
-import 'package:tankdrum_learning/drums/common/select_song_btn.dart';
-import 'package:tankdrum_learning/songs/song_sub.dart';
-import 'package:tankdrum_learning/utils/builder.ut.dart';
+// ignore_for_file: depend_on_referenced_packages
 
-import 'drums/tank_15n_drum.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:g_entities/entities.dart';
+import 'package:g_firestore/firestore.dart';
+import 'package:g_pages/pages.dart';
+import 'package:get/get.dart';
+import 'package:tankdrum_learning/entities/sys_config.dart';
+import 'package:tankdrum_learning/models/drum.dart';
+import 'package:tankdrum_learning/models/sound_set.dart';
+import 'package:tankdrum_learning/pages/player_page/player.page.dart';
+
+import 'entities/_generated/e_creator.dart';
+import 'entities/root.dart';
+import 'pages/_generated/page_list.dart';
+import 'src/i18n/translator.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const TankDrumApp(PlayerPage()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+class TankDrumApp extends RunningApp {
+  const TankDrumApp(home, {Key? key}) : super(home, key: key);
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-      ),
-      home: const MyHomePage(title: 'Learning Tank Drum'),
-    );
+  Translations createTranslations() {
+    return Translator();
   }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+  GetPage unknownRoute() {
+    return PlayerPage.page;
+  }
 
-class _MyHomePageState extends State<MyHomePage> {
   @override
-  Widget build(BuildContext context) {
-    rebuild() {
-      setState(() {});
+  Future<void> init() async {
+    await SysConfig.loadConfig();
+    Drum.init();
+    initApp();
+  }
+
+  initApp() async {
+    await SoundSet.loadLocal();
+    GEntity.instance.entityCreator = ECreator();
+    GEntity.instance.rootEntity = Root.instance;
+    if (!GetPlatform.isWeb) {
+      await Firebase.initializeApp();
     }
+    await GFirestore.init();
+    await GEntity.init();
+  }
 
-    return Scaffold(
-      body: ListView(children: [
-        BuilderUt.futureNoData(MusicNoteLib.init(),
-            () => const Center(child: Tank15NDrumWidget())),
-        const SongSub(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SelectSongBtn(rebuild),
-            const SelectPlayModeBtn(),
-          ],
-        )
-      ]),
-    );
+  @override
+  List<GetPage> getPageList() {
+    return pageList;
   }
 }
