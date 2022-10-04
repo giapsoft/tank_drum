@@ -25,15 +25,16 @@ class _CreateSongPc extends _CreateSong$Ctrl {
 
     initSoundNotes() {
       final size = Get.width / 8;
-      for (var drumNote in Drum.current.drumNotes) {
+      for (int i = 0; i < 15; i++) {
         soundNotes.add(SoundNoteUb(
-          drumNote.soundNoteName,
-          size: size,
+          state.tune + i,
+          width: size,
+          height: size,
           padding: 2.0,
         ));
       }
       // add one silence to delete note
-      soundNotes.add(SoundNoteUb('', size: size, padding: 2.0));
+      soundNotes.add(SoundNoteUb(-1, width: size, height: size, padding: 2.0));
     }
 
     initNotes();
@@ -60,6 +61,12 @@ class _CreateSongPc extends _CreateSong$Ctrl {
         }
       },
     );
+
+    state.tune$.listen((tune) {
+      for (var note in soundNotes) {
+        note.soundIdx += tune;
+      }
+    });
   }
 
   bool onWillAcceptNote(_NoteUb note, Object? data) {
@@ -163,7 +170,7 @@ class _CreateSongPc extends _CreateSong$Ctrl {
         state.songNotes.removeAt(idx);
         break;
       case _DragAction.changeSound:
-        state.songNotes[idx].soundName = data.soundName;
+        state.songNotes[idx].soundIdx = SoundNote.getNoteIdx(data.soundName);
         break;
       case _DragAction.insert:
         state.songNotes.insert(idx, SongNote(data.soundName));

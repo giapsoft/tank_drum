@@ -7,6 +7,7 @@ part of 'create_song.page.dart';
   SF_<int>(name: 'bpm', init: 150),
   SF_<bool>(name: 'isPlayingFromCurrentNote'),
   SF_<bool>(name: 'isPlayingCurrentPage'),
+  SF_<int>(name: 'tune', init: 21)
 ])
 class CreateSongBuilder extends CreateSong$Builder {
   @override

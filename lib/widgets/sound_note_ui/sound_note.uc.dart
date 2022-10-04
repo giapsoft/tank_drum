@@ -7,11 +7,15 @@ class _SoundNoteUc extends _SoundNote$Ctrl {
     animationTrigger = trigger;
   }
 
+  DateTime lastPlayed = DateTime.now();
   play() async {
-    SoundSet.playSound(builder.soundName);
-    animationTrigger();
-    if (builder.onTouchPlay != null) {
-      builder.onTouchPlay!();
+    if (DateTime.now().difference(lastPlayed).inMilliseconds > 80) {
+      SoundSet.play(builder.soundIdx);
+      animationTrigger();
+      if (builder.onTouchPlay != null) {
+        builder.onTouchPlay!();
+      }
+      lastPlayed = DateTime.now();
     }
   }
 }

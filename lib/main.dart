@@ -7,8 +7,6 @@ import 'package:g_firestore/firestore.dart';
 import 'package:g_pages/pages.dart';
 import 'package:get/get.dart';
 import 'package:tankdrum_learning/entities/sys_config.dart';
-import 'package:tankdrum_learning/models/drum.dart';
-import 'package:tankdrum_learning/models/sound_set.dart';
 import 'package:tankdrum_learning/pages/player_page/player.page.dart';
 
 import 'entities/_generated/e_creator.dart';
@@ -35,12 +33,10 @@ class TankDrumApp extends RunningApp {
   @override
   Future<void> init() async {
     await SysConfig.loadConfig();
-    Drum.init();
     initApp();
   }
 
   initApp() async {
-    await SoundSet.loadLocal();
     GEntity.instance.entityCreator = ECreator();
     GEntity.instance.rootEntity = Root.instance;
     if (!GetPlatform.isWeb) {

@@ -1,3 +1,4 @@
+import 'package:tankdrum_learning/models/instruments/instrument.dart';
 import 'package:tankdrum_learning/models/song_note_group.dart';
 
 import 'song_note.dart';
@@ -43,6 +44,7 @@ class SongPlayer {
       SongNoteGroup? next2)? onEndNoteGroup;
   bool isSilence;
   int delayGroupSecond = 0;
+  int tune = 0;
   SongPlayer({
     this.onStartNoteGroup,
     this.onEndNoteGroup,
@@ -57,12 +59,19 @@ class SongPlayer {
     this.delayGroupSecond = 0,
   });
 
-  play({List<SongNote>? notes, int? bpm, List<SongNoteGroup>? songNoteGroups}) {
+  Instrument? instrument;
+
+  play(
+      {List<SongNote>? notes,
+      int? bpm,
+      List<SongNoteGroup>? songNoteGroups,
+      Instrument? instrument}) {
     if (songNoteGroups != null) {
       noteGroups = songNoteGroups;
     } else if (notes != null) {
       noteGroups = SongNoteGroup.parse(notes);
     }
+    this.instrument = instrument;
 
     _currentGroupIdx = 0;
     _currentNoteIdx = 0;

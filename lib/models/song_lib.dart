@@ -1,26 +1,24 @@
 import 'package:tankdrum_learning/models/song_note.dart';
 
-import 'note_link_type.dart';
-
 class SongLib {
   static final List<SongNote> castleInTheSky = [
     SongNote('B4'),
     SongNote('C#5'),
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('D5'),
     SongNote('D4'),
     SongNote('F#4'),
     SongNote('C#5'),
     SongNote('D5'),
     SongNote('F#5')..beats = 2,
-    SongNote('C#5')..linkType = NoteLinkType.one,
+    SongNote('C#5')..hasLink = true,
     SongNote('F#3'),
     SongNote('A3'),
     SongNote('C#4'),
     SongNote('F#4'),
     SongNote('A4')..beats = 2,
     SongNote('F#4')..beats = 2,
-    SongNote('B4')..linkType = NoteLinkType.one,
+    SongNote('B4')..hasLink = true,
     SongNote('G3'),
     SongNote('B3'),
     SongNote('D4'),
@@ -28,21 +26,21 @@ class SongLib {
     SongNote('B4'),
     SongNote('D5')..beats = 2,
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A4')..beats = 2,
     SongNote('F#3')..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('B3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('G4')..beats = 3,
     SongNote('F#4'),
     SongNote('G4')..beats = 2,
     SongNote('D5')..beats = 2,
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('A3')..beats = 2,
@@ -51,7 +49,7 @@ class SongLib {
     SongNote('D5'),
     SongNote('D5'),
     SongNote('C#5')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('C#4')..beats = 2,
     SongNote('F#3'),
@@ -63,21 +61,21 @@ class SongLib {
     SongNote('F#5')..beats = 3,
     SongNote('B4'),
     SongNote('C#5'),
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('D5'),
     SongNote('D4'),
     SongNote('F#4'),
     SongNote('C#5'),
     SongNote('D5'),
     SongNote('F#5')..beats = 2,
-    SongNote('C#5')..linkType = NoteLinkType.one,
+    SongNote('C#5')..hasLink = true,
     SongNote('F#3'),
     SongNote('A3'),
     SongNote('C#4'),
     SongNote('F#4'),
     SongNote('A4')..beats = 2,
     SongNote('F#4')..beats = 2,
-    SongNote('B4')..linkType = NoteLinkType.one,
+    SongNote('B4')..hasLink = true,
     SongNote('G3'),
     SongNote('B3'),
     SongNote('D4'),
@@ -85,39 +83,39 @@ class SongLib {
     SongNote('B4'),
     SongNote('D5')..beats = 2,
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A4')..beats = 2,
     SongNote('F#3')..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('B3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G4')..beats = 2,
     SongNote('D5'),
     SongNote('C#5'),
     SongNote('D5'),
-    SongNote('A3')..linkType = NoteLinkType.one,
+    SongNote('A3')..hasLink = true,
     SongNote('E5'),
     SongNote('E5'),
     SongNote('C#4'),
     SongNote('F#5'),
-    SongNote('D5')..linkType = NoteLinkType.one,
+    SongNote('D5')..hasLink = true,
     SongNote('B3'),
     SongNote('D4'),
     SongNote('F#4'),
     SongNote('D4'),
-    SongNote('D5')..linkType = NoteLinkType.one,
+    SongNote('D5')..hasLink = true,
     SongNote('G3'),
     SongNote('C#5'),
     SongNote('B4')..beats = 2,
-    SongNote('C#5')..linkType = NoteLinkType.one,
+    SongNote('C#5')..hasLink = true,
     SongNote('A3'),
     SongNote('C#4'),
     SongNote('C#5')..beats = 2,
     SongNote('B4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('B3')..beats = 2,
     SongNote('F#3')..beats = 2,
@@ -125,7 +123,7 @@ class SongLib {
     SongNote('D4'),
     SongNote('E4'),
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('A3'),
@@ -133,106 +131,106 @@ class SongLib {
     SongNote('F#4'),
     SongNote('A4')..beats = 2,
     SongNote('A3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('E4')..beats = 3,
     SongNote('C#4'),
     SongNote('A3')..beats = 2,
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('B3')..beats = 2,
     SongNote('C#4'),
     SongNote('D4'),
     SongNote('F#4'),
     SongNote('F#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('F#3')..beats = 3,
     SongNote('A3')..beats = 2,
     SongNote('C#4')..beats = 2,
     SongNote('A3')..beats = 2,
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('C#4'),
     SongNote('D4')..beats = 2,
-    SongNote('C#4')..linkType = NoteLinkType.one,
+    SongNote('C#4')..hasLink = true,
     SongNote('A3'),
     SongNote('D4'),
     SongNote('E4')..beats = 2,
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('F#3')..beats = 2,
     SongNote('A3'),
     SongNote('B3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G4')..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('E4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('F#3')..beats = 2,
     SongNote('D4'),
     SongNote('F#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('C#4')..beats = 2,
     SongNote('C#5')..beats = 2,
     SongNote('F#4')..beats = 3,
-    SongNote('B4')..linkType = NoteLinkType.one,
+    SongNote('B4')..hasLink = true,
     SongNote('B3'),
     SongNote('B3'),
     SongNote('D4'),
     SongNote('B4'),
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('A3'),
     SongNote('C#4'),
     SongNote('E4'),
     SongNote('A4'),
-    SongNote('C#4')..linkType = NoteLinkType.one,
+    SongNote('C#4')..hasLink = true,
     SongNote('F#4'),
     SongNote('E4'),
     SongNote('D4')..beats = 3,
     SongNote('D4'),
     SongNote('E4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G3')..beats = 2,
     SongNote('D4'),
     SongNote('E4')..beats = 3,
     SongNote('A4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('C#4'),
     SongNote('F#3'),
     SongNote('A3'),
     SongNote('D4'),
     SongNote('F#4')..beats = 2,
-    SongNote('B4')..linkType = NoteLinkType.one,
+    SongNote('B4')..hasLink = true,
     SongNote('B3'),
     SongNote('B3'),
     SongNote('D4'),
     SongNote('B4'),
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('A3'),
     SongNote('C#4'),
     SongNote('E4'),
     SongNote('A4'),
-    SongNote('C#4')..linkType = NoteLinkType.one,
+    SongNote('C#4')..hasLink = true,
     SongNote('F#4'),
     SongNote('E4'),
     SongNote('D4')..beats = 3,
     SongNote('D4'),
     SongNote('E4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G3')..beats = 2,
     SongNote('D4'),
     SongNote('E4')..beats = 3,
     SongNote('C#4')..beats = 2,
     SongNote('F#3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('B3')..beats = 2,
   ];
@@ -241,68 +239,68 @@ class SongLib {
     SongNote('B3')..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 4,
     SongNote('A3')..beats = 4,
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
     SongNote('E4'),
     SongNote('D4'),
     SongNote('F#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 4,
     SongNote('A3')..beats = 4,
     SongNote('B3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G3')..beats = 2,
     SongNote('B4')..beats = 2,
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('A3'),
     SongNote('B4'),
     SongNote('A4'),
     SongNote('E4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
     SongNote('A3'),
     SongNote('D4'),
     SongNote('E4'),
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 4,
     SongNote('B3')..beats = 4,
     SongNote('B3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G3')..beats = 2,
     SongNote('B4')..beats = 2,
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('A3'),
     SongNote('E4'),
     SongNote('F#4'),
     SongNote('G4'),
     SongNote('F#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('D4')..beats = 2,
     SongNote('E4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('C#4')..beats = 2,
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('B3'),
     SongNote('B3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G3')..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('E4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('A3')..beats = 3,
     SongNote('C#4'),
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('F#3'),
     SongNote('B3'),
@@ -310,35 +308,35 @@ class SongLib {
     SongNote('D4')..beats = 4,
     SongNote('B3'),
     SongNote('F#3'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('B3'),
     SongNote('F#3'),
     SongNote('C#4'),
     SongNote('F#3'),
     SongNote('C#4'),
     SongNote('F#3'),
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
     SongNote('E4'),
     SongNote('D4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
     SongNote('A3'),
     SongNote('D4'),
     SongNote('A3'),
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
-    SongNote('B4')..linkType = NoteLinkType.one,
+    SongNote('B4')..hasLink = true,
     SongNote('G4'),
     SongNote('D4'),
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('A3'),
     SongNote('B4'),
     SongNote('A4'),
     SongNote('E4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
     SongNote('A3'),
     SongNote('D4'),
@@ -347,37 +345,37 @@ class SongLib {
     SongNote('A3'),
     SongNote('D4'),
     SongNote('E4'),
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
-    SongNote('B4')..linkType = NoteLinkType.one,
+    SongNote('B4')..hasLink = true,
     SongNote('G4'),
     SongNote('D4'),
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('A3'),
     SongNote('E4'),
     SongNote('F#4'),
     SongNote('G4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
     SongNote('A3'),
-    SongNote('E4')..linkType = NoteLinkType.one,
+    SongNote('E4')..hasLink = true,
     SongNote('C#4'),
     SongNote('A3'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('B3'),
     SongNote('F#3'),
     SongNote('B3'),
     SongNote('D4'),
     SongNote('B3')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('G3')..beats = 2,
     SongNote('F#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('D4')..beats = 2,
-    SongNote('E4')..linkType = NoteLinkType.one,
+    SongNote('E4')..hasLink = true,
     SongNote('A3'),
     SongNote('A3'),
     SongNote('E4'),
@@ -390,122 +388,122 @@ class SongLib {
     SongNote('F#4'),
     SongNote('B3'),
     SongNote('C#4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('B3'),
     SongNote('E4'),
     SongNote('F#4'),
     SongNote('D4'),
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('A3')..beats = 2,
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
     SongNote('E4'),
     SongNote('F#4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
     SongNote('A3'),
     SongNote('B3'),
     SongNote('C#4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('B3'),
     SongNote('E4'),
     SongNote('F#4'),
     SongNote('D4'),
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('A3')..beats = 2,
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
     SongNote('E4'),
     SongNote('D4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('A3'),
     SongNote('A3'),
     SongNote('B3'),
     SongNote('C#4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('B3'),
     SongNote('E4'),
     SongNote('F#4'),
     SongNote('D4'),
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('A3')..beats = 2,
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
     SongNote('E4'),
     SongNote('F#4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
     SongNote('A3'),
     SongNote('B3'),
     SongNote('C#4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('B3'),
     SongNote('E4'),
     SongNote('F#4'),
     SongNote('D4'),
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('A3')..beats = 2,
-    SongNote('B3')..linkType = NoteLinkType.one,
+    SongNote('B3')..hasLink = true,
     SongNote('G3'),
     SongNote('D4'),
     SongNote('E4'),
     SongNote('D4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('A3'),
     SongNote('A3'),
     SongNote('B3'),
     SongNote('C#4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('B3'),
     SongNote('E4'),
     SongNote('F#4'),
     SongNote('D4'),
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('A3')..beats = 2,
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('E4'),
     SongNote('D4'),
-    SongNote('E4')..linkType = NoteLinkType.one,
+    SongNote('E4')..hasLink = true,
     SongNote('D4'),
     SongNote('F#4'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
     SongNote('A3'),
     SongNote('B3'),
     SongNote('C#4'),
     SongNote('D4'),
-    SongNote('E4')..linkType = NoteLinkType.one,
+    SongNote('E4')..hasLink = true,
     SongNote('A3'),
-    SongNote('F#4')..linkType = NoteLinkType.one,
+    SongNote('F#4')..hasLink = true,
     SongNote('D4'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('A3'),
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('D4')..beats = 2,
     SongNote('C#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('A3')..beats = 3,
@@ -521,157 +519,157 @@ class SongLib {
 
   static final proudOfYou = [
     SongNote('F#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('F#4'),
     SongNote('G4'),
     SongNote('A4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('C#4')..beats = 2,
     SongNote('B4'),
     SongNote('C#5'),
     SongNote('D5')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('B3')..beats = 2,
     SongNote('F#4'),
     SongNote('G4'),
     SongNote('A4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 4,
     SongNote('A3')..beats = 4,
     SongNote('A4')..beats = 2,
     SongNote('D4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 4,
     SongNote('B3')..beats = 4,
     SongNote('B4'),
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('E4'),
     SongNote('D5'),
     SongNote('A4'),
     SongNote('D4'),
     SongNote('G4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('E4')..beats = 3,
     SongNote('D4'),
     SongNote('E4')..beats = 2,
     SongNote('F#4')..beats = 2,
     SongNote('F#4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('D4')..beats = 2,
     SongNote('F#4'),
     SongNote('G4'),
     SongNote('A4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('C#4')..beats = 2,
     SongNote('B4'),
     SongNote('C#5'),
-    SongNote('D5')..linkType = NoteLinkType.one,
+    SongNote('D5')..hasLink = true,
     SongNote('B3'),
     SongNote('D5'),
     SongNote('F#4'),
     SongNote('G4'),
     SongNote('A4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 2,
     SongNote('A3')..beats = 2,
     SongNote('E4'),
     SongNote('F#4'),
-    SongNote('G4')..linkType = NoteLinkType.one,
+    SongNote('G4')..hasLink = true,
     SongNote('B3'),
     SongNote('F#4'),
-    SongNote('G4')..linkType = NoteLinkType.one,
+    SongNote('G4')..hasLink = true,
     SongNote('D5'),
-    SongNote('D5')..linkType = NoteLinkType.one,
+    SongNote('D5')..hasLink = true,
     SongNote('F#4'),
     SongNote('E4'),
     SongNote('F#4'),
-    SongNote('G4')..linkType = NoteLinkType.one,
+    SongNote('G4')..hasLink = true,
     SongNote('E4'),
     SongNote('F#4'),
-    SongNote('G4')..linkType = NoteLinkType.one,
+    SongNote('G4')..hasLink = true,
     SongNote('E5'),
-    SongNote('E5')..linkType = NoteLinkType.one,
+    SongNote('E5')..hasLink = true,
     SongNote('A3'),
     SongNote('D5'),
     SongNote('C#5'),
     SongNote('D5')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 4,
     SongNote('D4')..beats = 4,
     SongNote('E5'),
-    SongNote('F#5')..linkType = NoteLinkType.one,
+    SongNote('F#5')..hasLink = true,
     SongNote('C#4'),
     SongNote('E5'),
     SongNote('D5'),
     SongNote('C#5'),
     SongNote('D5')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('B3')..beats = 3,
     SongNote('D5'),
-    SongNote('C#5')..linkType = NoteLinkType.one,
+    SongNote('C#5')..hasLink = true,
     SongNote('A3'),
     SongNote('A4'),
     SongNote('A4'),
     SongNote('D4'),
     SongNote('B4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('G4')..beats = 3,
     SongNote('B4'),
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('F#4'),
     SongNote('D4'),
     SongNote('D4'),
     SongNote('F#4'),
     SongNote('E4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('B3')..beats = 3,
     SongNote('F#4'),
-    SongNote('G4')..linkType = NoteLinkType.one,
+    SongNote('G4')..hasLink = true,
     SongNote('A3'),
     SongNote('A4'),
     SongNote('D5'),
     SongNote('C#5'),
     SongNote('D5')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('D4')..beats = 3,
     SongNote('E5'),
-    SongNote('F#5')..linkType = NoteLinkType.one,
+    SongNote('F#5')..hasLink = true,
     SongNote('C#4'),
     SongNote('E5'),
     SongNote('D5'),
     SongNote('C#5'),
     SongNote('D5')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('B3')..beats = 3,
     SongNote('D5'),
-    SongNote('C#5')..linkType = NoteLinkType.one,
+    SongNote('C#5')..hasLink = true,
     SongNote('A3'),
     SongNote('A4'),
     SongNote('A4'),
     SongNote('D4'),
     SongNote('B4')
-      ..linkType = NoteLinkType.one
+      ..hasLink = true
       ..beats = 3,
     SongNote('G4')..beats = 3,
     SongNote('B4'),
-    SongNote('A4')..linkType = NoteLinkType.one,
+    SongNote('A4')..hasLink = true,
     SongNote('A3'),
     SongNote('A4'),
     SongNote('D5'),
     SongNote('C#5'),
-    SongNote('D4')..linkType = NoteLinkType.one,
+    SongNote('D4')..hasLink = true,
     SongNote('D5'),
   ];
 

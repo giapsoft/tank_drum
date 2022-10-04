@@ -1,0 +1,271 @@
+// SFZ Definition File
+
+
+//		Simple Kalimba 1.0
+//Code and samples by Yolaxy 
+
+
+count=1
+loop_mode=no_loop
+
+//ADSR
+
+ampeg_attack=0
+
+ampeg_decay=0
+
+ampeg_sustain=100
+
+ampeg_release=5
+
+amp_veltrack=100
+
+<global>
+
+
+
+<master>
+hivel=43
+lovel=0
+
+	<group> //1 Soft
+	ampeg_release=5
+	loop_mode=no_loop
+	volume=20
+	
+<region>
+sample=/samples/1/1_A4_Soft.wav
+lokey=a1
+hikey=c#4
+pitch_keycenter=a3
+
+	<group> //1 - 3 different samples
+	ampeg_release=5
+	loop_mode=no_loop
+	
+hivel=127
+lovel=44
+
+<region>
+sample=/samples/1/1_A4_1.wav
+lokey=a1
+hikey=c#4
+pitch_keycenter=a3
+lorand=0
+hirand=0.01
+
+<region>
+sample=/samples/1/1_A4_2.wav
+lokey=a1
+hikey=c#4
+pitch_keycenter=a3
+lorand=0.02
+hirand=0.45
+
+<region>
+sample=/samples/1/1_A4_3.wav
+lokey=a1
+hikey=c#4
+pitch_keycenter=a3
+lorand=0.45
+hirand=1
+
+<master>
+hivel=43
+lovel=0
+
+	<group> //2 Soft
+	ampeg_release=5
+	loop_mode=no_loop
+	volume=25
+	
+<region>
+sample=/samples/2/2_D5_Soft.wav
+lokey=d4
+hikey=f4
+pitch_keycenter=d4
+
+	<group> //2 - 3 different samples
+	ampeg_release=5
+	loop_mode=no_loop
+	
+hivel=127
+lovel=44
+
+<region>
+sample=/samples/2/2_D5_1.wav
+lokey=d4
+hikey=f4
+pitch_keycenter=d4
+lorand=0
+hirand=0.4
+<region>
+sample=/samples/2/2_D5_2.wav
+lokey=d4
+hikey=f4
+pitch_keycenter=d4
+lorand=0.4
+hirand=0.8
+
+<region>
+sample=/samples/2/2_D5_3.wav
+lokey=d4
+hikey=f4
+pitch_keycenter=d4
+lorand=0.8
+hirand=1
+
+<master>
+hivel=43
+lovel=0
+
+	<group> //3 Soft
+	ampeg_release=5
+	loop_mode=no_loop
+	volume=10
+	
+<region>
+sample=/samples/3/3_F#5_Soft.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+
+	<group> //3 - 4 different samples
+	ampeg_release=5
+	loop_mode=no_loop
+	
+hivel=127
+lovel=44
+
+<region>
+sample=/samples/3/3_F#5_1.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0
+hirand=0.3
+<region>
+sample=/samples/3/3_F#5_2.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0.3
+hirand=0.6
+
+<region>
+sample=/samples/3/3_F#5_3.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0.6
+hirand=0.9
+
+<region>
+sample=/samples/3/3_F#5_4.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0.9
+hirand=1
+
+<master>
+hivel=43
+lovel=0
+
+	<group> //3 Soft
+	ampeg_release=5
+	loop_mode=no_loop
+	volume=10
+	
+<region>
+sample=/samples/3/3_F#5_Soft.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+
+	<group> //3 - 4 different samples
+	ampeg_release=5
+	loop_mode=no_loop
+	
+hivel=127
+lovel=44
+
+<region>
+sample=/samples/3/3_F#5_1.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0
+hirand=0.3
+<region>
+sample=/samples/3/3_F#5_2.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0.3
+hirand=0.6
+
+<region>
+sample=/samples/3/3_F#5_3.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0.6
+hirand=0.9
+
+<region>
+sample=/samples/3/3_F#5_4.wav
+lokey=f#4
+hikey=g#4
+pitch_keycenter=f#4
+lorand=0.9
+hirand=1
+
+<master>
+hivel=127
+lovel=0
+
+	<group> //4 
+	ampeg_release=5
+	loop_mode=no_loop
+	volume=35
+	
+<region>
+sample=/samples/4/4_A5_Soft.wav
+lokey=a4
+hikey=c#9
+pitch_keycenter=a4
+
+	// <group> //4 - 3 different samples
+	// ampeg_release=5
+	// loop_mode=no_loop
+	// volume=10
+	
+// hivel=127
+// lovel=44
+
+// <region>
+// sample=/samples/4/4_A5_1.wav
+// lokey=a4
+// hikey=c#5
+// pitch_keycenter=a4
+// lorand=0.20
+// hirand=0.60
+// <region>
+// sample=/samples/4/4_A5_2.wav
+// lokey=a4
+// hikey=c#5
+// pitch_keycenter=a4
+// lorand=0
+// hirand=0.20
+
+// <region>
+// sample=/samples/4/4_A5_3.wav
+// lokey=a4
+// hikey=c#5
+// pitch_keycenter=a4
+// lorand=0.60
+// hirand=1
+
+
+

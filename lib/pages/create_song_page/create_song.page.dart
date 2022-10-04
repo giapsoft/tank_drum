@@ -4,7 +4,7 @@ import 'package:g_components/components.dart';
 import 'package:g_pages/pages.dart';
 import 'package:get/get.dart';
 import 'package:tankdrum_learning/models/song_player.dart';
-import '../../models/drum.dart';
+import 'package:tankdrum_learning/models/sound_note.dart';
 import '../../models/note_link_type.dart';
 import '../../models/song_lib.dart';
 import '../../models/song_note.dart';

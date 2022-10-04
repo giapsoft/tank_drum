@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:g_pages/pages.dart';
 import 'package:get/get.dart';
+import 'package:tankdrum_learning/models/instruments/instrument_note.dart';
+import 'package:tankdrum_learning/models/sound_note.dart';
 
 import '../../models/sound_set.dart';
 import '../sound_name_text.dart';
@@ -9,18 +13,28 @@ part 'sound_note._.dart';
 part 'sound_note.uc.dart';
 
 class SoundNoteUb extends _SoundNote$Ub {
-  SoundNoteUb(this.soundName,
+  SoundNoteUb(this.soundIdx,
       {this.onTouchPlay,
-      this.size = 50,
+      this.width = 50,
+      this.height = 50,
       this.padding = 0.0,
+      this.borderPadding,
+      this.borderRadius,
+      this.instrumentNote,
       this.paddingText = 0.0});
+  final InstrumentNote? instrumentNote;
   Function()? onTouchPlay;
-  final String soundName;
-  final double size;
+  int soundIdx;
+  final double width;
+  final double height;
   final double padding;
   final double paddingText;
   final isActive = false.obs;
   final isWaiter = false.obs;
+  final EdgeInsets? borderPadding;
+  final BorderRadiusGeometry? borderRadius;
+
+  String get soundName => SoundNote.getNoteName(soundIdx);
 
   static Color getColor(bool isActive, bool isWaiter) {
     return (isActive && isWaiter)
@@ -55,46 +69,29 @@ class SoundNoteUb extends _SoundNote$Ub {
 
   @override
   Widget build() {
-    return GestureDetector(
-      onTap: ctrl.play,
+    return Listener(
+      onPointerDown: (p) {
+        ctrl.play();
+      },
       child: buildView(),
     );
   }
 
   Widget buildView() {
     return SizedBox(
-      width: size,
-      height: size,
+      width: width,
+      height: height,
       child: Padding(
         padding: EdgeInsets.all(padding),
-        child: _BouncingButton(
-            isActive: isActive,
-            Padding(
-                padding: EdgeInsets.all(paddingText),
-                child: SoundNameText(
-                  soundName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                )),
-            size,
-            ctrl.setAnimationTrigger,
-            color),
+        child: _BouncingButton(this),
       ),
     );
   }
 }
 
 class _BouncingButton extends StatefulWidget {
-  const _BouncingButton(
-      this.soundName, this.size, this.setBouncingTrigger, this.color,
-      {Key? key, required this.isActive})
-      : super(key: key);
-  final RxBool isActive;
-  final Widget soundName;
-  final double size;
-  final Function(Function()) setBouncingTrigger;
-  final Color Function() color;
+  const _BouncingButton(this.soundBuilder, {Key? key}) : super(key: key);
+  final SoundNoteUb soundBuilder;
 
   @override
   State<_BouncingButton> createState() => _BouncingButtonState();
@@ -104,6 +101,7 @@ class _BouncingButtonState extends State<_BouncingButton>
     with SingleTickerProviderStateMixin {
   double _scale = 0;
   late AnimationController _controller;
+  SoundNoteUb get soundBuilder => widget.soundBuilder;
   @override
   void initState() {
     _controller = AnimationController(
@@ -134,33 +132,40 @@ class _BouncingButtonState extends State<_BouncingButton>
   @override
   Widget build(BuildContext context) {
     _scale = 1 - _controller.value;
-    widget.setBouncingTrigger(trigger);
+    soundBuilder.ctrl.setAnimationTrigger(trigger);
     return Transform.scale(
       scale: _scale,
       child: SizedBox(
-          width: widget.size * _scale,
-          height: widget.size * _scale,
+          width: soundBuilder.width * _scale,
+          height: soundBuilder.height * _scale,
           child: _animatedButtonUI),
     );
   }
 
+  get borderRadius =>
+      soundBuilder.borderRadius ??
+      const BorderRadius.only(
+          bottomLeft: Radius.circular(200), bottomRight: Radius.circular(200));
+
+  get padding => 0.05 * min(soundBuilder.width, soundBuilder.height);
+
   Widget get _animatedButtonUI => Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100.0),
+            borderRadius: borderRadius,
             border: Border.all(
                 color: const Color.fromARGB(80, 110, 110, 110), width: 2)),
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(0.05 * widget.size),
+            padding: soundBuilder.borderPadding ?? EdgeInsets.all(padding),
             child: Obx(() => Container(
-                  width: double.infinity,
-                  height: double.infinity,
+                  width: soundBuilder.width,
+                  height: soundBuilder.height,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: widget.color()),
-                  child: Center(
-                    child: widget.soundName,
-                  ),
+                      borderRadius: borderRadius, color: soundBuilder.color()),
+                  child: soundBuilder.instrumentNote?.nameBuilder() ??
+                      Center(
+                        child: SoundNameText(soundBuilder.soundName),
+                      ),
                 )),
           ),
         ),

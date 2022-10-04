@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class SoundNameText extends StatelessWidget {
-  const SoundNameText(this.soundName, {this.style, Key? key}) : super(key: key);
+  const SoundNameText(this.soundName, {this.style, this.isVertical, Key? key})
+      : super(key: key);
   final String soundName;
   final TextStyle? style;
+  final bool? isVertical;
 
   TextStyle get textStyle =>
       style ?? const TextStyle(color: Color.fromARGB(255, 255, 255, 255));
@@ -13,37 +15,48 @@ class SoundNameText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return soundName.isEmpty
-        ? const SizedBox()
-        : Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                    flex: remainLetters.isNotEmpty
-                        ? 2 ~/ remainLetters.length
-                        : 1,
-                    child: FittedBox(
-                        fit: BoxFit.fitHeight,
-                        child: Text(
-                          firstLetter,
-                          style: textStyle,
-                        ))),
-                Expanded(
-                    flex: 1,
-                    child: FittedBox(
-                        fit: BoxFit.fitHeight,
-                        child: Transform.translate(
-                          offset: const Offset(-2.0, 2.0),
-                          child: Text(
-                            remainLetters,
-                            style: textStyle,
-                          ),
-                        ))),
-              ],
-            ),
-          );
+    return soundName.isEmpty ? const SizedBox() : buildSoundName();
   }
+
+  buildSoundName() {
+    return (isVertical ?? false) ? buildVertical() : buildNormal();
+  }
+
+  buildVertical() {
+    return FittedBox(
+      fit: BoxFit.contain,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: soundName.split("").map((e) => Text(e)).toList(),
+      ),
+    );
+  }
+
+  buildNormal() => Padding(
+      padding: const EdgeInsets.only(bottom: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+              flex: remainLetters.isNotEmpty ? 2 ~/ remainLetters.length : 1,
+              child: FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: Text(
+                    firstLetter,
+                    style: textStyle,
+                  ))),
+          Expanded(
+              flex: 1,
+              child: FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: Transform.translate(
+                    offset: const Offset(-4.0, 2.0),
+                    child: Text(
+                      remainLetters,
+                      style: textStyle,
+                    ),
+                  ))),
+        ],
+      ));
 }
