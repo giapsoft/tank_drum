@@ -55,7 +55,6 @@ flutter:
     - assets/note_sounds/steeldrum/
     - assets/backgrounds/
     - assets/app_sounds/
-    - assets/NiceSteinwayv39.sf2
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
