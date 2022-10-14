@@ -1,63 +1,87 @@
 part of '../../player.page.dart';
 
 class _InstrumentNoteUc extends _InstrumentNote$Ctrl {
-  static const totalTuts = 10;
-
-  late SoundNoteUb soundBuilder;
   @override
   postConstruct() {
-    soundBuilder = SoundNoteUb(builder.note.currentSoundIdx,
-        instrumentNote: builder.note,
-        borderPadding: builder.note.padding,
-        borderRadius: builder.note.borderRadius,
-        width: builder.note.width,
-        height: builder.note.height,
-        paddingText: 6,
-        onTouchPlay: builder.onTouchPlay);
+    state.note$.listen((p0) {
+      if (p0.width > 0) {
+        builder.instrumentUc.soundIdxToNoteUb[builder.currentSoundIdx] =
+            builder;
+      }
+    });
   }
 
-  List<_NoteTutUb>? _tuts;
-  List<_NoteTutUb> get tuts => _tuts ??= genTuts();
-  List<_NoteTutUb> genTuts() {
-    final t = <_NoteTutUb>[];
-    for (int i = 0; i < totalTuts; i++) {
-      t.add(_NoteTutUb(builder.note, i));
-    }
-    return t;
-  }
-
-  int _readyIdx = 0;
-
-  _NoteTutUb pickTut() {
-    final result = tuts[_readyIdx];
-    if (_readyIdx == tuts.length - 1) {
-      _readyIdx = 0;
-    } else {
-      _readyIdx++;
-    }
-    return result;
+  Color? getColor(bool isActive, bool isWaiter) {
+    return (isActive && isWaiter)
+        ? const Color.fromARGB(255, 112, 7, 7)
+        : isActive
+            ? const Color.fromARGB(255, 255, 39, 39)
+            : isWaiter
+                ? const Color.fromARGB(255, 255, 81, 81)
+                : null;
   }
 
   play() async {
-    soundBuilder.ctrl.play();
+    SoundSet.play(builder.currentSoundIdx);
   }
 
-  bool isSwipedIn = false;
+  active() {
+    state.isActive = true;
+  }
 
-  bool inBody = false;
-  bool fromIn = false;
+  inactive() {
+    state.isActive = false;
+  }
+
+  wait() {
+    state.isWait = true;
+  }
+
+  unwait() {
+    state.isWait = false;
+  }
+
+  triggerTut() {}
+
+  bool _inBody = false;
   swipe(Offset pos) {
-    if (builder.note.isInBody(pos)) {
-      if (!inBody) {
-        inBody = true;
+    if (isInBody(pos)) {
+      if (!_inBody) {
+        _inBody = true;
+        Future.delayed(const Duration(milliseconds: 500)).then((_) {
+          _inBody = false;
+        });
         doSwipedIn();
       }
-    } else if (builder.note.isInBorder(pos)) {
-      inBody = false;
+    } else if (isInBorder(pos)) {
+      _inBody = false;
     }
   }
 
   doSwipedIn() {
     play();
+  }
+
+  double borderWidth = 30;
+
+  double get topWidthInset => state.note.top + builder.instrumentUc.top;
+  double get leftWithInset => builder.left + builder.instrumentUc.left;
+
+  bool isInBorder(Offset pos) {
+    return topWidthInset - borderWidth < pos.dy &&
+        leftWithInset - borderWidth < pos.dx &&
+        topWidthInset + builder.height + borderWidth * 2 > pos.dy &&
+        leftWithInset + builder.width + borderWidth * 2 > pos.dx;
+  }
+
+  bool isInBody(Offset pos) {
+    return topWidthInset < pos.dy &&
+        leftWithInset < pos.dx &&
+        topWidthInset + builder.height > pos.dy &&
+        leftWithInset + builder.width > pos.dx;
+  }
+
+  void updateNote([InstrumentNote? note]) {
+    state.note = note ?? InstrumentNote(top: 1, left: 0.5);
   }
 }

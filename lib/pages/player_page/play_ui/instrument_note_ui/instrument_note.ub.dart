@@ -2,39 +2,64 @@
 
 part of '../../player.page.dart';
 
-@Ui_(isSingle: true)
+@Ui_(
+  isSingle: true,
+  state: [
+    SF_<InstrumentNote>(name: 'note'),
+    SF_<int>(name: 'tune'),
+    SF_<bool>(name: 'isActive'),
+    SF_<bool>(name: 'isWait'),
+  ],
+)
 class _InstrumentNoteUb extends _InstrumentNote$Ub {
-  _InstrumentNoteUb(this.playCtrl, this.note, {required this.onTouchPlay});
-  final InstrumentNote note;
-  final _PlayUc playCtrl;
+  _InstrumentNoteUb(this.instrumentUc, {required this.onTouchPlay});
+  final _InstrumentUc instrumentUc;
   final Function() onTouchPlay;
+
+  int get currentSoundIdx =>
+      state.tune + state.note.deltaSoundIdx + instrumentUc.playState.tune;
+  void tuneTo(int soundSet) {
+    state.tune =
+        soundSet - state.note.deltaSoundIdx - instrumentUc.playState.tune;
+  }
+
+  double get top => instrumentUc.getTop(state.note.top);
+  double get left => instrumentUc.getLeft(state.note.left);
+  double get width => instrumentUc.getWidth(state.note.width);
+  double get height => instrumentUc.getHeight(state.note.height);
+
+  static const moveDuration = Duration(seconds: 1);
 
   @override
   Widget build() {
-    return Positioned(
-      top: note.top,
-      left: note.left,
-      width: note.width,
-      height: note.height,
-      child: Transform.rotate(
-          angle: note.angle * pi / 180, child: ctrl.soundBuilder.ui),
+    return Obx(() => AnimatedPositioned(
+          duration: moveDuration,
+          curve: Curves.fastLinearToSlowEaseIn,
+          top: top,
+          left: left,
+          width: width,
+          height: height,
+          child: buildAnimationRotateChild(),
+        ));
+  }
+
+  buildAnimationRotateChild() {
+    return AnimatedRotation(
+      duration: moveDuration,
+      curve: Curves.fastOutSlowIn,
+      turns: state.note.angle / 360,
+      child: buildInnerNote(),
     );
   }
 
-  Widget buildTutPath() {
-    return const SizedBox();
-    // return Positioned(
-    //   top: ctrl.drumNote.pos.tutPathTop,
-    //   left: ctrl.drumNote.pos.tutPathLeft,
-    //   height: ctrl.drumNote.pos.tutPathHeight,
-    //   width: ctrl.drumNote.pos.tutPathWidth,
-    //   child: Container(
-    //     width: ctrl.drumNote.pos.size,
-    //     height: ctrl.drumNote.pos.size,
-    //     decoration: BoxDecoration(
-    //         color: const Color.fromARGB(78, 46, 46, 46),
-    //         borderRadius: BorderRadius.circular(ctrl.drumNote.pos.size)),
-    //   ),
-    // );
+  buildInnerNote() {
+    return BounceButton(
+        AnimatedContainer(
+          duration: moveDuration,
+          decoration: instrumentUc.instrument.buildDecoration(state.note,
+              color: ctrl.getColor(state.isActive, state.isWait)),
+          child: const Center(child: SizedBox()),
+        ),
+        onTrigger: onTouchPlay);
   }
 }

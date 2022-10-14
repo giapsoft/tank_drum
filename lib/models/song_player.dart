@@ -109,10 +109,6 @@ class SongPlayer {
       : noteGroups[_currentGroupIdx + 2];
   bool get hasNext => _currentGroupIdx < noteGroups.length - 1;
 
-  SongNoteGroup next() {
-    return noteGroups[++_currentGroupIdx];
-  }
-
   _onStartNoteGroup(SongNoteGroup group) async {
     if (onStartNoteIdxRange != null) {
       final list = [
@@ -153,11 +149,11 @@ class SongPlayer {
       await waiter.wait(group);
       _onEndNoteGroup(group);
       _currentGroupIdx++;
+      _play();
     } else {
       _onFinish();
       return;
     }
-    _play();
   }
 
   _runFunction(Function()? func) {

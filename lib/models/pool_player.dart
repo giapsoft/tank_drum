@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/services.dart';
 import 'package:soundpool/soundpool.dart';
 
-class SoundPlayer {
+class PoolPlayer {
   Soundpool pool = Soundpool.fromOptions(
       options: const SoundpoolOptions(
     streamType: StreamType.music,
@@ -11,10 +11,13 @@ class SoundPlayer {
 
   Map<String, int> setSoundId = {};
   Future<void> _loadFile(String filePath) async {
-    if (setSoundId[filePath] != null) {
+    final currentId = setSoundId[filePath];
+    if (currentId == null && setSoundId.isNotEmpty) {
+      await release();
+    }
+    if (currentId == -1) {
       return;
     }
-    release();
     setSoundId[filePath] = -1;
     await rootBundle.load(filePath).then((soundData) async {
       final id = await pool.load(soundData);
@@ -39,9 +42,9 @@ class SoundPlayer {
     }
   }
 
-  static final Map<int, SoundPlayer> _players = {};
-  static SoundPlayer getPlayer(int soundIdx) {
-    return _players[soundIdx] ??= SoundPlayer();
+  static final Map<int, PoolPlayer> _players = {};
+  static PoolPlayer getPlayer(int soundIdx) {
+    return _players[soundIdx] ??= PoolPlayer();
   }
 
   static playMusicSound(int soundIdx, String filePath) {
@@ -52,14 +55,9 @@ class SoundPlayer {
     getPlayer(-1)._play(filePath);
   }
 
-  static loadSounds(Iterable<int> soundIdxList, List<String> filePaths) async {
-    for (final idx in _players.keys) {
-      if (!soundIdxList.contains(idx)) {
-        await getPlayer(idx).release();
-      }
-    }
+  static loadSounds(List<int> soundIdxList, List<String> filePaths) async {
     for (int i = 0; i < soundIdxList.length; i++) {
-      final soundIdx = soundIdxList.elementAt(i);
+      final soundIdx = soundIdxList[i];
       final filePath = filePaths[i];
       await getPlayer(soundIdx)._loadFile(filePath);
     }

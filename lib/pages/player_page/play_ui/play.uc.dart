@@ -13,89 +13,18 @@ class _PlayUc extends _Play$Ctrl {
   double get smallBarSize => 1 / barSize;
   double get largeBarSize => (barSize - 1) / barSize;
 
+  bool get isFreeMode => state.songNotes.isEmpty;
+  bool get isTrainingMode => !isFreeMode && state.playMode == 0;
+  bool get isPerformanceMode => !isFreeMode && state.playMode == 1;
+
   setWrapper(BoxConstraints constraints, EdgeInsets insets) {
     instrumentConstraints = constraints;
     instrumentInsets = insets;
-    setNoteCount();
   }
 
-  InstrumentNote get instrumentWrapper {
-    if (maxWidth > maxHeight) {
-      if (instrument.isKalimba) {
-        return InstrumentNote(
-            insets: instrumentInsets,
-            posIdx: 0,
-            top: 0,
-            left: 0,
-            width: maxWidth,
-            height: maxHeight * largeBarSize);
-      } else {
-        return InstrumentNote(
-            insets: instrumentInsets,
-            posIdx: 0,
-            top: 0,
-            left: maxWidth / barSize,
-            width: maxWidth * largeBarSize,
-            height: maxHeight);
-      }
-    } else {
-      if (instrument.isKalimba) {
-        return InstrumentNote(
-            insets: instrumentInsets,
-            posIdx: 0,
-            top: 0,
-            left: 0,
-            width: maxWidth,
-            height: maxHeight * largeBarSize);
-      } else {
-        return InstrumentNote(
-            insets: instrumentInsets,
-            posIdx: 0,
-            top: maxHeight / barSize,
-            left: 0,
-            width: maxWidth,
-            height: maxHeight * largeBarSize);
-      }
-    }
-  }
-
-  barWrap(List<Widget> controls) {
-    final child = Wrap(
-      children: controls,
-    );
-    if (maxWidth > maxHeight) {
-      if (instrument.isKalimba) {
-        return Positioned(
-            bottom: 0,
-            left: 0,
-            width: maxWidth,
-            height: maxHeight * smallBarSize,
-            child: child);
-      } else {
-        return Positioned(
-            left: 0,
-            top: 0,
-            width: maxWidth * smallBarSize,
-            height: maxHeight,
-            child: child);
-      }
-    } else {
-      if (instrument.isKalimba) {
-        return Positioned(
-            bottom: 0,
-            left: 0,
-            width: maxWidth,
-            height: maxHeight * smallBarSize,
-            child: child);
-      } else {
-        return Positioned(
-            left: 0,
-            top: 0,
-            width: maxWidth,
-            height: maxHeight * smallBarSize,
-            child: child);
-      }
-    }
+  @override
+  close() {
+    PoolPlayer.realeaseAllSounds();
   }
 
   final songs = {
@@ -118,15 +47,9 @@ class _PlayUc extends _Play$Ctrl {
   touchSelfMode() {
     state.isSelfMode = !state.isSelfMode;
     if (state.isSelfMode) {
-      inactiveAllNotes();
+      children.instrument.ctrl.inactiveAll();
       setSongNotes(songNotes);
       highlightCurrentTrigger();
-    }
-  }
-
-  inactiveAllNotes() {
-    for (var sound in noteBuilders) {
-      sound.ctrl.soundBuilder.inactive();
     }
   }
 
@@ -139,7 +62,7 @@ class _PlayUc extends _Play$Ctrl {
       onFinish: () async {
         state.isPlaying = false;
         await Future.delayed(const Duration(seconds: 2));
-        inactiveAllNotes();
+        children.instrument.ctrl.inactiveAll();
       },
       onStartNoteGroup: (group, prev, next, next2) {
         if (prev == null) {
@@ -149,73 +72,41 @@ class _PlayUc extends _Play$Ctrl {
         triggerTut(group, next, next2);
       },
     );
-    state.bpm$.listen((p0) {
-      player.setBpm(p0);
-    });
-    state.tune$.listen((tune) {
-      player.tune = tune;
-      instrument.customTune = tune;
-    });
-    state.currentSong$.listen((songName) {
-      if (songName.isEmpty) {
-        setSongNotes([]);
-        inactiveAllNotes();
-        instrument.reset();
-        setNoteCount();
-        return;
-      }
+    // state.bpm$.listen((p0) {
+    //   player.setBpm(p0);
+    // });
+    // state.tune$.listen((tune) {
+    //   player.tune = tune;
+    //   instrument.customTune = tune;
+    // });
+    // state.currentSong$.listen((songName) {
+    //   if (songName.isEmpty) {
+    //     setSongNotes([]);
+    //     inactiveAllNotes();
+    //     instrument.reset();
+    //     setNoteCount();
+    //     return;
+    //   }
 
-      final songNotes = songs[songName]!;
-      setSongNotes(songNotes);
-      inactiveAllNotes();
-      if (state.isSelfMode) {
-        highlightCurrentTrigger();
-      }
-      final soundIdxSet = songNotes.map((e) => e.soundIdx).toSet();
-      if (!instrument.isAbleToPlay(soundIdxSet)) {
-        final name = Instrument.findInstrumentCanPlay(soundIdxSet).name;
-        Instrument.getInstrument(name).prepareSounds(soundIdxSet);
-        state.instrumentName = name;
-      } else {
-        instrument.prepareSounds(currentSoundIdxSet);
-      }
-      setNoteCount();
-    });
-
-    state.instrumentName$.listen((_) {
-      SoundSet.current = instrument.defaultSoundSet;
-      setNoteCount();
-    });
+    //   final songNotes = songs[songName]!;
+    //   setSongNotes(songNotes);
+    //   inactiveAllNotes();
+    //   if (state.isSelfMode) {
+    //     highlightCurrentTrigger();
+    //   }
+    //   final soundIdxSet = songNotes.map((e) => e.soundIdx).toSet();
+    //   if (!instrument.isAbleToPlay(soundIdxSet)) {
+    //     final name = Instrument.findInstrumentCanPlay(soundIdxSet).name;
+    //     Instrument.getInstrument(name).prepareSounds(soundIdxSet);
+    //     state.instrumentName = name;
+    //   } else {
+    //     instrument.prepareSounds(currentSoundIdxSet);
+    //   }
+    //   setNoteCount();
+    // });
   }
 
   Set<int> get currentSoundIdxSet => songNotes.map((e) => e.soundIdx).toSet();
-
-  setNoteCount([int? count]) {
-    state.noteCount = count ?? instrument.noteList.length;
-    instrument.setPositionNotes(state.noteCount);
-    resetNoteBuilders();
-    updateSoundIdxToNote();
-  }
-
-  resetNoteBuilders() {
-    if (noteBuilders.length == state.noteCount) {
-      return;
-    }
-    noteBuilders.clear();
-    for (final instrumentNote in instrument.noteList) {
-      noteBuilders.add(_InstrumentNoteUb(this, instrumentNote, onTouchPlay: () {
-        if (state.isSelfMode) {
-          final trigger = groupTrigger(player.currentGroupNote)!;
-          if (trigger.isFinalNote(instrumentNote.currentSoundIdx) &&
-              player.hasNext) {
-            player.next();
-            highlightCurrentTrigger();
-          }
-        }
-      }));
-    }
-    instrument.setWrapper(instrumentWrapper);
-  }
 
   highlightCurrentTrigger() {
     groupTrigger(player.prevGroupNote)?.inActive();
@@ -228,7 +119,7 @@ class _PlayUc extends _Play$Ctrl {
     for (var tut in gTrigger.tuts) {
       tut.ctrl.trigger(() {
         if (state.isAutoSound) {
-          tut.instrumentNote.play();
+          // tut.instrumentNote.play();
         }
         if (gTrigger.isCountEnded()) {
           gTrigger.inActive();
@@ -249,15 +140,15 @@ class _PlayUc extends _Play$Ctrl {
 
   _NoteGroupTrigger genTut(SongNoteGroup group) {
     final trigger = _NoteGroupTrigger(group);
-    for (var songNote in group.notes) {
-      final ub = soundIdxToNote[songNote.soundIdx];
-      if (ub != null) {
-        trigger.addTut(ub.ctrl.pickTut());
-        trigger.soundUbs.add(ub.ctrl.soundBuilder);
-      } else {
-        print('missing idx: ${songNote.soundIdx}');
-      }
-    }
+    // for (var songNote in group.notes) {
+    //   final ub = children.instrument.ctrl.getNoteBySoundIdx(songNote.soundIdx);
+    //   if (ub != null) {
+    //     trigger.addTut(ub.ctrl.pickTut());
+    //     trigger.soundUbs.add(ub.ctrl.soundBuilder);
+    //   } else {
+    //     print('missing idx: ${songNote.soundIdx}');
+    //   }
+    // }
     return trigger;
   }
 
@@ -271,15 +162,6 @@ class _PlayUc extends _Play$Ctrl {
     }
   }
 
-  List<_InstrumentNoteUb> noteBuilders = [];
-  Map<int, _InstrumentNoteUb> soundIdxToNote = {};
-  updateSoundIdxToNote() {
-    soundIdxToNote.clear();
-    for (var e in noteBuilders) {
-      soundIdxToNote[e.note.currentSoundIdx] = e;
-    }
-  }
-
   onDrag(DragUpdateDetails details) {
     drag(details.globalPosition);
   }
@@ -289,20 +171,8 @@ class _PlayUc extends _Play$Ctrl {
   }
 
   drag(Offset offset) async {
-    for (var note in noteBuilders) {
+    for (var note in children.instrument.ctrl.currentUbs) {
       note.ctrl.swipe(offset);
     }
-  }
-
-  void touchAutoSound() {
-    state.isAutoSound = !state.isAutoSound;
-  }
-
-  nextNoteCount() {
-    setNoteCount(instrument.nextNoteCount());
-  }
-
-  prevNoteCount() {
-    setNoteCount(instrument.prevNoteCount());
   }
 }

@@ -1,3 +1,5 @@
+import 'package:tankdrum_learning/models/sound_note.dart';
+
 import 'song_note.dart';
 
 class SongNoteGroup {
@@ -6,6 +8,14 @@ class SongNoteGroup {
   int waitingMillisecond = 0;
   int idx;
   SongNoteGroup(this.notes, this.beats, this.waitingMillisecond, this.idx);
+
+  toString() {
+    final noteName = notes
+        .map((e) => e.soundIdxList.map((e) => SoundNote.getNoteName(e)))
+        .expand((element) => element)
+        .join(',');
+    return 'SongNote(\'$noteName\', $beats)';
+  }
 
   play({
     isSilence = false,

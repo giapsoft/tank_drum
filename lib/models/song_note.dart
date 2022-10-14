@@ -10,9 +10,11 @@ class SongNote {
   bool hasLink = false;
   NoteLinkType linkType = NoteLinkType.none;
   String get soundName => SoundNote.getNoteName(soundIdx);
-  SongNote(String soundName) {
-    soundIdx = SoundNote.getNoteIdx(soundName);
-  }
+  SongNote(String soundNames)
+      : soundIdxList =
+            soundNames.split(',').map((e) => SoundNote.getNoteIdx(e)).toList();
+
+  List<int> soundIdxList;
 
   Future<void> waiting(int bpm) {
     final time = Duration(milliseconds: (bpm / 60 * beats * 1000).round());

@@ -69,8 +69,8 @@ class SoundNoteUb extends _SoundNote$Ub {
 
   @override
   Widget build() {
-    return Listener(
-      onPointerDown: (p) {
+    return GestureDetector(
+      onTap: () {
         ctrl.play();
       },
       child: buildView(),
@@ -131,6 +131,7 @@ class _BouncingButtonState extends State<_BouncingButton>
 
   @override
   Widget build(BuildContext context) {
+    context.width;
     _scale = 1 - _controller.value;
     soundBuilder.ctrl.setAnimationTrigger(trigger);
     return Transform.scale(
@@ -162,10 +163,9 @@ class _BouncingButtonState extends State<_BouncingButton>
                   height: soundBuilder.height,
                   decoration: BoxDecoration(
                       borderRadius: borderRadius, color: soundBuilder.color()),
-                  child: soundBuilder.instrumentNote?.nameBuilder() ??
-                      Center(
-                        child: SoundNameText(soundBuilder.soundName),
-                      ),
+                  child: Center(
+                    child: SoundNameText(soundBuilder.soundName),
+                  ),
                 )),
           ),
         ),

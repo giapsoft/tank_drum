@@ -1,4 +1,0 @@
-enum TutDirection {
-  fromTop,
-  around,
-}

@@ -72,9 +72,9 @@ class SoundNote {
     return [0, 0];
   }
 
-  static List<int> genNotesContainsList(
+  static List<List<int>> genNotesContainsList(
       List<int> deltaCycle, List<int> sortedIdxList, int expectTotal) {
-    final result = [sortedIdxList.first];
+    final tracingList = [sortedIdxList.first];
     Iterator<int> cycleLooper = deltaCycle.iterator;
     int getNextDelta() {
       if (!cycleLooper.moveNext()) {
@@ -86,18 +86,21 @@ class SoundNote {
 
     int count = 1;
     int soundIdxCount = 1;
-    while (
-        soundIdxCount < sortedIdxList.length || result.length < expectTotal) {
+    final result = <List<int>>[];
+    while (soundIdxCount < sortedIdxList.length ||
+        tracingList.length < expectTotal) {
       final delta = getNextDelta();
-      result.add(result[count - 1] + delta);
+      tracingList.add(tracingList[count - 1] + delta);
       if (soundIdxCount < sortedIdxList.length) {
         final idx = sortedIdxList[soundIdxCount];
-        if (result.contains(idx)) {
+        if (tracingList.contains(idx)) {
           soundIdxCount++;
-        } else if (result[count] > idx) {
-          result[count] = idx;
+        } else if (tracingList[count] > idx) {
+          tracingList[count] = idx;
           soundIdxCount++;
         }
+      } else {
+        result.add([...tracingList]);
       }
 
       count++;
@@ -116,14 +119,14 @@ class SoundNote {
     return result;
   }
 
-  static List<int> findProperSoundSet(
+  static List<List<int>> findProperSoundSet(
       int deltaCycleMove, Set<int> soundIdxSet, int expectCount) {
     final deltaCycle = getDeltaCycle(deltaCycleMove);
     final list = soundIdxSet.toList();
     list.sort();
     int minDiffSize = soundIdxSet.length;
-    List<int> notes = [];
-    List<int> result = [];
+    List<List<int>> notes = [];
+    List<List<int>> result = [];
 
     for (int i = 0; i < 12; i++) {
       final listToScan = i == 0 ? [...list] : [list.first - i, ...list];
@@ -131,13 +134,15 @@ class SoundNote {
       notes = genNotesContainsList(deltaCycle, listToScan, expectCount);
       final originalList = genDeltaListByLength(deltaCycleMove, notes.length,
           first: listToScan.first);
-      diffSize = NumberUt.countNotInList(originalList, notes);
-      if (diffSize == 0) {
-        return notes;
-      }
+      diffSize = NumberUt.countNotInList(originalList, notes.first);
+
       if (diffSize < minDiffSize) {
         minDiffSize = diffSize;
         result = [...notes];
+      }
+
+      if (diffSize == 0) {
+        return notes;
       }
     }
     return result;

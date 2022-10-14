@@ -8,20 +8,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tankdrum_learning/models/instruments/instrument.dart';
 import 'package:tankdrum_learning/models/song_lib.dart';
+import 'package:tankdrum_learning/models/song_note_group.dart';
 import 'package:tankdrum_learning/models/sound_note.dart';
 import 'package:tankdrum_learning/models/sound_set.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    List<int> cycle = [];
-    print(SoundNote.getNoteSign(-5, 2, SoundNote.getNoteIdx('F#3')));
-    print(SoundNote.getNoteSign(-5, 2, SoundNote.getNoteIdx('G#3')));
-    print(SoundNote.getNoteSign(0, 0, SoundNote.getNoteIdx('D5')));
-    print(SoundNote.getNoteSign(0, 0, SoundNote.getNoteIdx('E5')));
-    print(SoundNote.getNoteSign(0, 0, SoundNote.getNoteIdx('F5')));
-    print(SoundNote.getNoteSign(0, 0, SoundNote.getNoteIdx('G5')));
-    print(SoundNote.getNoteSign(0, 0, SoundNote.getNoteIdx('A5')));
-  });
+  print(SongNoteGroup.parse(SongLib.castleInTheSky));
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
 }
 
 testFindSoundSet() {
@@ -55,27 +48,6 @@ testFillDelta1() {
     print('i: $i, time: $time, add: $add, result: ${result[i]}');
   }
   print(result);
-}
-
-testPitch() {
-  print(SoundSet.current.baseIdxList
-      .map((e) => '$e:${SoundNote.getNoteName(e)}')
-      .join(', '));
-  SoundSet.play(SoundNote.getNoteIdx('C#1'));
-  SoundSet.play(SoundNote.getNoteIdx('F1'));
-  SoundSet.play(SoundNote.getNoteIdx('F#1'));
-  SoundSet.play(SoundNote.getNoteIdx('F#2'));
-  SoundSet.play(SoundNote.getNoteIdx('B1'));
-  SoundSet.play(32);
-  SoundSet.play(39);
-  SoundSet.play(46);
-  SoundSet.play(51);
-  SoundSet.play(55);
-  SoundSet.play(SoundNote.getNoteIdx('B6'));
-  SoundSet.play(SoundNote.getNoteIdx('C#8'));
-  print(SoundSet.current.baseIdxList
-      .map((e) => '$e:${SoundNote.getNoteName(e)}')
-      .join(', '));
 }
 
 fillTank() {
