@@ -159,5 +159,5 @@ class TankDrum extends Instrument {
   }
 
   @override
-  IconData get iconData => TankIcon.instrument_tankdrum;
+  IconData get iconData => TankIcon.instrument_tank_drum;
 }

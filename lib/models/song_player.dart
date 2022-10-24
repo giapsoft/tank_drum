@@ -1,162 +1,118 @@
-import 'package:tankdrum_learning/models/instruments/instrument.dart';
-import 'package:tankdrum_learning/models/song_note_group.dart';
+import 'package:tankdrum_learning/models/song_sentence.dart';
 
 import 'song_note.dart';
 
-class NoteWaiter {
-  int _bpm = 90;
-  static const byBpm = 'byBpm';
-  static const byMillisecond = 'byMillisecond';
-  String mode = '';
-
-  update(int? bpm) {
-    if (bpm == null) {
-      mode = byMillisecond;
-    } else {
-      _bpm = bpm;
-      mode = byBpm;
-    }
-  }
-
-  wait(SongNoteGroup note) async {
-    if (mode == byBpm) {
-      await note.waitingByBeats(_bpm);
-    } else {
-      await note.waitingByMillisecond();
-    }
-  }
-}
-
 class SongPlayer {
-  List<SongNoteGroup> noteGroups = [];
+  List<SongSentence> sentences = [];
+  List<SongNote> get notes => currentSentence?.notes ?? [];
+  SongSentence? get currentSentence =>
+      currentSentenceIdx >= 0 && currentSentenceIdx < sentences.length - 1
+          ? sentences[currentSentenceIdx]
+          : null;
+
   bool _isPlaying = false;
-  NoteWaiter waiter = NoteWaiter();
   Function()? onFinish;
   Function()? onPause;
   Function()? onPlay;
   Function()? onStop;
-  Function(List<int>)? onStartNoteIdxRange;
-  Function(SongNote)? onStartNote;
-  Function(SongNote)? onEndNote;
-  Function(SongNoteGroup group, SongNoteGroup? prev, SongNoteGroup? next,
-      SongNoteGroup? next2)? onStartNoteGroup;
-  Function(SongNoteGroup group, SongNoteGroup? prev, SongNoteGroup? next,
-      SongNoteGroup? next2)? onEndNoteGroup;
+  Function()? onStartNote;
+  Function()? onEndNote;
+  Function()? onNextNote;
+  Function()? onNextSentence;
+  Function(int)? onTouchedIdx;
+  int bpm = 100;
   bool isSilence;
-  int delayGroupSecond = 0;
   int tune = 0;
   SongPlayer({
-    this.onStartNoteGroup,
-    this.onEndNoteGroup,
     this.isSilence = false,
+    this.onNextSentence,
     this.onFinish,
     this.onPlay,
     this.onPause,
     this.onStop,
-    this.onStartNoteIdxRange,
     this.onStartNote,
     this.onEndNote,
-    this.delayGroupSecond = 0,
+    this.onTouchedIdx,
+    this.onNextNote,
   });
 
-  Instrument? instrument;
-
-  play(
-      {List<SongNote>? notes,
-      int? bpm,
-      List<SongNoteGroup>? songNoteGroups,
-      Instrument? instrument}) {
-    if (songNoteGroups != null) {
-      noteGroups = songNoteGroups;
-    } else if (notes != null) {
-      noteGroups = SongNoteGroup.parse(notes);
-    }
-    this.instrument = instrument;
-
-    _currentGroupIdx = 0;
+  play({
+    List<SongSentence>? songSentences,
+    int? bpm,
+  }) {
+    sentences = songSentences ?? [];
+    this.bpm = bpm ?? 100;
     _currentNoteIdx = 0;
-
-    _runFunction(onPlay);
-
+    _currentNoteIdx = 0;
     _isPlaying = true;
-    waiter.update(bpm);
+    _run(onPlay);
     _play();
   }
 
-  reset({List<SongNoteGroup>? noteGroups}) {
-    if (noteGroups != null) {
-      this.noteGroups = noteGroups;
-    }
-    _currentGroupIdx = 0;
+  reset({List<SongSentence>? songSentences}) {
+    sentences = songSentences ?? [];
     _currentNoteIdx = 0;
+    currentSentenceIdx = 0;
   }
 
-  setBpm(int bpm) {
-    waiter.update(bpm);
-  }
-
-  int _currentGroupIdx = 0;
   int _currentNoteIdx = 0;
-  SongNoteGroup get currentGroupNote => noteGroups[_currentGroupIdx];
-  SongNoteGroup? get prevGroupNote =>
-      _currentGroupIdx < 1 ? null : noteGroups[_currentGroupIdx - 1];
-  SongNoteGroup? get nextGroupNote => _currentGroupIdx >= noteGroups.length - 1
-      ? null
-      : noteGroups[_currentGroupIdx + 1];
+  int currentSentenceIdx = 0;
 
-  SongNoteGroup? get nextGroupNote2 => _currentGroupIdx >= noteGroups.length - 2
-      ? null
-      : noteGroups[_currentGroupIdx + 2];
-  bool get hasNext => _currentGroupIdx < noteGroups.length - 1;
-
-  _onStartNoteGroup(SongNoteGroup group) async {
-    if (onStartNoteIdxRange != null) {
-      final list = [
-        for (var i = _currentNoteIdx;
-            i < _currentNoteIdx + group.notes.length;
-            i++)
-          i
-      ];
-      onStartNoteIdxRange!(list);
-    }
-
-    if (onStartNoteGroup != null) {
-      onStartNoteGroup!(group, prevGroupNote, nextGroupNote, nextGroupNote2);
-    }
-
-    _currentNoteIdx += group.notes.length;
-  }
-
-  _onEndNoteGroup(SongNoteGroup group) async {
-    if (onEndNoteGroup != null) {
-      if (delayGroupSecond > 0) {
-        await Future.delayed(Duration(seconds: delayGroupSecond));
-      }
-      onEndNoteGroup!(group, prevGroupNote, nextGroupNote, nextGroupNote2);
-    }
-  }
-
-  _onFinish() async {
-    _runFunction(onFinish);
+  SongNote? get currentNote => _getNote(_currentNoteIdx);
+  SongNote? get prevNote => _getNote(_currentNoteIdx - 1);
+  SongNote? get nextNote => _getNote(_currentNoteIdx + 1);
+  SongNote? get nextNote2 => _getNote(_currentNoteIdx + 2);
+  SongNote? _getNote(int idx) {
+    return (notes.isNotEmpty && notes.length > idx) ? notes[idx] : null;
   }
 
   _play() async {
-    if (_isPlaying && noteGroups.length > _currentGroupIdx) {
-      final group = noteGroups[_currentGroupIdx];
-      _onStartNoteGroup(group);
-      group.play(
-          onStartNote: onStartNote, onEndNote: onEndNote, isSilence: isSilence);
-      await waiter.wait(group);
-      _onEndNoteGroup(group);
-      _currentGroupIdx++;
+    if (_isPlaying && sentences.length > _currentNoteIdx) {
+      _run(onStartNote);
+      await currentNote?.waitBpm(bpm);
+      if (!isSilence) {
+        currentNote?.play(tune: tune);
+      }
+      _run(onEndNote);
+      _nextNote();
       _play();
     } else {
-      _onFinish();
-      return;
+      _run(onFinish);
+      _run(stop);
     }
   }
 
-  _runFunction(Function()? func) {
+  List<int> waitingIdx = [];
+  _nextNote() {
+    if (currentSentence != null) {
+      if (_currentNoteIdx < currentSentence!.notes.length - 1) {
+        _currentNoteIdx++;
+      } else {
+        currentSentenceIdx++;
+        _run(onNextSentence);
+        _currentNoteIdx = 0;
+      }
+      waitingIdx = currentNote?.soundIdxList ?? [];
+      _run(onNextNote);
+    }
+  }
+
+  touchIdx(int idx) {
+    waitingIdx.removeWhere((waitingIdx) {
+      if (waitingIdx == idx + tune) {
+        if (onTouchedIdx != null) {
+          onTouchedIdx!(waitingIdx);
+        }
+        return true;
+      }
+      return false;
+    });
+    while (nextNote != null && waitingIdx.isEmpty) {
+      _nextNote();
+    }
+  }
+
+  _run(Function()? func) {
     if (func != null) {
       func();
     }
@@ -164,12 +120,12 @@ class SongPlayer {
 
   stop() {
     _isPlaying = false;
-    _currentGroupIdx = 0;
-    _runFunction(onStop);
+    _currentNoteIdx = 0;
+    _run(onStop);
   }
 
   pause() {
     _isPlaying = false;
-    _runFunction(onPause);
+    _run(onPause);
   }
 }

@@ -8,12 +8,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tankdrum_learning/models/instruments/instrument.dart';
 import 'package:tankdrum_learning/models/song_lib.dart';
-import 'package:tankdrum_learning/models/song_note_group.dart';
 import 'package:tankdrum_learning/models/sound_note.dart';
-import 'package:tankdrum_learning/models/sound_set.dart';
 
 void main() {
-  print(SongNoteGroup.parse(SongLib.castleInTheSky));
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
 }
 
@@ -30,10 +27,10 @@ testFindSoundSet() {
   // traceSoundSet({33, 45, 32, 45, 67, 44, 22, 46, 48, 65});
   // traceSoundSet({33, 45, 32, 45, 44, 22, 46, 48});
   // traceSoundSet({27, 29, 31, 32, 34, 36, 38, 39, 41, 43, 44, 46});
-  traceSoundSet(SongLib.happyBirthDay.map((e) => e.soundIdx).toSet());
-  traceSoundSet(SongLib.castleInTheSky.map((e) => e.soundIdx).toSet());
-  traceSoundSet(SongLib.endlessLove.map((e) => e.soundIdx).toSet());
-  traceSoundSet(SongLib.proudOfYou.map((e) => e.soundIdx).toSet());
+  // traceSoundSet(SongLib.happyBirthDay.map((e) => e.soundIdx).toSet());
+  // traceSoundSet(SongLib.castleInTheSky.map((e) => e.soundIdx).toSet());
+  // traceSoundSet(SongLib.endlessLove.map((e) => e.soundIdx).toSet());
+  // traceSoundSet(SongLib.proudOfYou.map((e) => e.soundIdx).toSet());
 }
 
 testFillDelta1() {

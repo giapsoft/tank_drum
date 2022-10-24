@@ -39,15 +39,9 @@ class _CreateSongPc extends _CreateSong$Ctrl {
 
     initNotes();
     initSoundNotes();
-    state.songNotes = SongLib.endlessLove;
+    // state.songNotes = SongLib.endlessLove;
     renderSongNotesToScreen();
     player = SongPlayer(
-      onStartNoteIdxRange: (idxList) {
-        lastActiveNote?.ctrl.touchActive();
-        for (var idx in idxList) {
-          notes[idx].state.isActive = true;
-        }
-      },
       onFinish: () {
         if (state.isPlayingCurrentPage) {
           state.isPlayingCurrentPage = false;
@@ -95,8 +89,7 @@ class _CreateSongPc extends _CreateSong$Ctrl {
       if (state.songNotes.length > state.currentNoteIdx + notes.length) {
         final songNote = state.songNotes[state.currentNoteIdx + notes.length];
         notes.last.state.draggingBeats = songNote.beats;
-        notes.last.state.draggingType = songNote.linkType;
-        notes.last.state.draggingName = songNote.soundName;
+        // notes.last.state.draggingName = songNote.soundName;
       }
       data.action = _DragAction.delete;
       data.validatedData = note.idx;
@@ -170,10 +163,10 @@ class _CreateSongPc extends _CreateSong$Ctrl {
         state.songNotes.removeAt(idx);
         break;
       case _DragAction.changeSound:
-        state.songNotes[idx].soundIdx = SoundNote.getNoteIdx(data.soundName);
+        // state.songNotes[idx].soundIdx = SoundNote.getNoteIdx(data.soundName);
         break;
       case _DragAction.insert:
-        state.songNotes.insert(idx, SongNote(data.soundName));
+        // state.songNotes.insert(idx, SongNote(data.soundName));
         break;
       case _DragAction.none:
         break;
@@ -196,8 +189,6 @@ class _CreateSongPc extends _CreateSong$Ctrl {
       if (state.songNotes.length > songNoteIdx) {
         final songNote = state.songNotes[songNoteIdx];
         var noteState = note.state;
-        noteState.linkType = songNote.linkType;
-        noteState.soundName = songNote.soundName;
         noteState.beats = songNote.beats;
       }
     }
@@ -213,7 +204,6 @@ class _CreateSongPc extends _CreateSong$Ctrl {
         note.ctrl.nextNote != null &&
         note.ctrl.nextNote!.state.soundName.isNotEmpty) {
       note.state.linkType = note.state.linkType.next();
-      getSongNote(note).linkType = note.state.linkType;
       if (note.state.linkType.isNone()) {
         fixToSameLink(note.ctrl.prevNote);
         fixToSameLink(note.ctrl.nextNote);
@@ -237,7 +227,6 @@ class _CreateSongPc extends _CreateSong$Ctrl {
     note.ctrl.sameLinkNotes().forEach((element) {
       if (element.idx < sameLink.last.idx) {
         element.state.linkType = note.state.linkType;
-        getSongNote(element).linkType = note.state.linkType;
       }
     });
   }
@@ -273,9 +262,7 @@ class _CreateSongPc extends _CreateSong$Ctrl {
     }
   }
 
-  _doPlayNotesInCurrentPage() {
-    player.play(notes: getIndependentNotesInCurrentPage(), bpm: state.bpm);
-  }
+  _doPlayNotesInCurrentPage() {}
 
   playFromCurrentNote() {
     if (state.isPlayingFromCurrentNote) {

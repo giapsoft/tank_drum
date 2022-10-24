@@ -8,16 +8,19 @@ class _InstrumentUc extends _Instrument$Ctrl {
   double top = 0;
   double left = 0;
   final noteUbs = <_InstrumentNoteUb>[];
-  List<_InstrumentNoteUb> get currentUbs =>
-      playState.notes.isEmpty ? [] : noteUbs.sublist(0, playState.notes.length);
+  List<_InstrumentNoteUb> get currentUbs => playState.instrumentNotes.isEmpty
+      ? []
+      : noteUbs.sublist(0, playState.instrumentNotes.length);
   final soundIdxToNoteUb = <int, _InstrumentNoteUb>{};
 
   @override
   postConstruct() {
     for (int i = 0; i < 48; i++) {
-      noteUbs.add(_InstrumentNoteUb(this, onTouchPlay: () {}));
+      noteUbs.add(_InstrumentNoteUb(this, onTouchPlay: () {
+        SoundSet.play(noteUbs[i].currentSoundIdx);
+      }));
     }
-    playState.notes$.listen((notes) {
+    playState.instrumentNotes$.listen((notes) {
       for (int i = 0; i < noteUbs.length; i++) {
         if (i < notes.length) {
           noteUbs[i].ctrl.updateNote(notes[i]);
@@ -26,13 +29,7 @@ class _InstrumentUc extends _Instrument$Ctrl {
         }
       }
       lastInstrument = instrument;
-      resetTune();
     });
-    playState.instrumentName$.listen((_) {
-      playState.noteSet = instrument.possibleNoteCount;
-      playState.notes = instrument.getNotes(playState.noteSet.last);
-    });
-    playState.notes = instrument.getNotes(instrument.defaultNoteCount);
   }
 
   _InstrumentNoteUb getNoteBySoundIdx(int soundIdx) {
@@ -93,30 +90,6 @@ class _InstrumentUc extends _Instrument$Ctrl {
     playState.tune = instrument.startCycleIdx;
     for (var note in currentUbs) {
       note.state.tune = 0;
-    }
-  }
-
-  prepareSounds(Set<int> soundIdxSet) {
-    if (soundIdxSet.isEmpty) {
-      resetTune();
-      return;
-    }
-    playState.playableNoteSet = instrument.playableNoteSet(soundIdxSet);
-    while (playState.playableNoteSet.isEmpty) {
-      parent.state.instrumentName = instrument.nextName();
-      playState.playableNoteSet = instrument.playableNoteSet(soundIdxSet);
-    }
-    if (!playState.playableNoteSet
-        .map((e) => e.length)
-        .contains(playState.notes.length)) {
-      playState.notes =
-          instrument.getNotes(playState.playableNoteSet.first.length);
-    }
-    final currentSounds = playState.playableNoteSet
-        .firstWhere((element) => playState.notes.length == element.length);
-    playState.tune = currentSounds.first;
-    for (int i = 0; i < currentSounds.length; i++) {
-      noteUbs[i].tuneTo(currentSounds[i]);
     }
   }
 

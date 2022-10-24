@@ -17,10 +17,15 @@ class _InstrumentNoteUb extends _InstrumentNote$Ub {
   final Function() onTouchPlay;
 
   int get currentSoundIdx =>
-      state.tune + state.note.deltaSoundIdx + instrumentUc.playState.tune;
+      state.tune +
+      state.note.deltaSoundIdx +
+      instrumentUc.playState.tune +
+      instrumentUc.instrument.startCycleIdx;
   void tuneTo(int soundSet) {
-    state.tune =
-        soundSet - state.note.deltaSoundIdx - instrumentUc.playState.tune;
+    state.tune = soundSet -
+        state.note.deltaSoundIdx -
+        instrumentUc.playState.tune -
+        instrumentUc.instrument.startCycleIdx;
   }
 
   double get top => instrumentUc.getTop(state.note.top);
@@ -48,9 +53,12 @@ class _InstrumentNoteUb extends _InstrumentNote$Ub {
       duration: moveDuration,
       curve: Curves.fastOutSlowIn,
       turns: state.note.angle / 360,
-      child: buildInnerNote(),
+      child: innerNote,
     );
   }
+
+  BounceButton? _innerNote;
+  BounceButton get innerNote => _innerNote ??= buildInnerNote();
 
   buildInnerNote() {
     return BounceButton(

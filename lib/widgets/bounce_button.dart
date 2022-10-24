@@ -7,9 +7,9 @@ class BounceButton extends StatefulWidget {
   final Function() onTrigger;
   final List<Function()> _trigger = [];
   trigger() {
+    onTrigger();
     for (var t in _trigger) {
       t();
-      onTrigger();
     }
   }
 
@@ -43,6 +43,7 @@ class _BounceButtonState extends State<BounceButton>
   }
 
   trigger() async {
+    widget.onTrigger();
     _controller.forward();
     await Future.delayed(const Duration(milliseconds: 100));
     _controller.reverse();

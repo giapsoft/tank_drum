@@ -18,7 +18,7 @@ class Kalimba extends Instrument {
   BoxDecoration buildDecoration(InstrumentNote note, {Color? color}) {
     return BoxDecoration(
         border: Border.all(),
-        color: Color.fromARGB(255, 2, 162, 190),
+        color: const Color.fromARGB(255, 2, 162, 190),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(200),
           bottomRight: Radius.circular(200),
@@ -97,7 +97,7 @@ class Kalimba extends Instrument {
 
   @override
   List<int> get possibleNoteCount {
-    return List.generate(15, (index) => index + 7);
+    return [7, 11, 17, 21];
   }
 
   @override

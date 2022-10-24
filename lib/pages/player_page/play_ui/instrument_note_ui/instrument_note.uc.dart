@@ -59,7 +59,7 @@ class _InstrumentNoteUc extends _InstrumentNote$Ctrl {
   }
 
   doSwipedIn() {
-    play();
+    builder.innerNote.trigger();
   }
 
   double borderWidth = 30;

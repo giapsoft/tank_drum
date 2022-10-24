@@ -1,27 +1,27 @@
-import 'package:tankdrum_learning/models/note_link_type.dart';
-import 'package:tankdrum_learning/models/sound_note.dart';
-
+import 'sound_note.dart';
 import 'sound_set.dart';
 
 class SongNote {
   int beats = 1;
-  int soundIdx = -1;
-  int millisecond = 0;
-  bool hasLink = false;
-  NoteLinkType linkType = NoteLinkType.none;
-  String get soundName => SoundNote.getNoteName(soundIdx);
-  SongNote(String soundNames)
+  int milliseconds = 0;
+  SongNote(String soundNames, [this.beats = 1])
       : soundIdxList =
             soundNames.split(',').map((e) => SoundNote.getNoteIdx(e)).toList();
 
   List<int> soundIdxList;
 
-  Future<void> waiting(int bpm) {
+  Future<void> waitBpm(int bpm) {
     final time = Duration(milliseconds: (bpm / 60 * beats * 1000).round());
     return Future.delayed(time);
   }
 
+  Future<void> wait() {
+    return Future.delayed(Duration(milliseconds: milliseconds));
+  }
+
   play({int tune = 0}) async {
-    SoundSet.play(soundIdx + tune);
+    for (var idx in soundIdxList) {
+      SoundSet.play(idx + tune);
+    }
   }
 }

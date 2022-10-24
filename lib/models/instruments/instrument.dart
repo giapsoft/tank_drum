@@ -41,6 +41,13 @@ abstract class Instrument {
   List<InstrumentNote> getNotes(int totalNotes);
 
   List<List<int>> playableNoteSet(Set<int> soundIdxSet);
+  static List<String> playableInstruments(Set<int> soundIdxSet) {
+    return Instrument.allInstruments.values
+        .map((e) => e())
+        .where((i) => i.playableNoteSet(soundIdxSet).isNotEmpty)
+        .map((e) => e.name)
+        .toList();
+  }
 
   String nextName() {
     if (isKalimba) {

@@ -1,7 +1,5 @@
 part of 'player.page.dart';
 
-enum PlayMode { bySong, byLine, byHacker, byPlayList, byShuflePlayList }
-
 class _PlayerPc extends _Player$Ctrl {
   @override
   postConstruct() {

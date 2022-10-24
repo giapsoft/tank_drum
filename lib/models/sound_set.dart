@@ -26,20 +26,21 @@ class SoundSet {
   static final tankDrum = SoundSet('Tank Drum', 'tankdrum', 'mp3');
   static final piano = SoundSet('Piano', 'piano', 'ogg');
   static final kalimba = SoundSet('Kalimba', 'kalimba', 'mp3');
-  static final harp = SoundSet('Harp', 'harp', 'ogg');
+  static final lyre = SoundSet('Lyre Harp', 'harp', 'ogg');
   static final guzheng = SoundSet('Guzheng', 'guzheng', 'mp3');
   static final allSet = {
     kalimba.name: kalimba,
     guzheng.name: guzheng,
     tankDrum.name: tankDrum,
-    harp.name: harp,
+    lyre.name: lyre,
     piano.name: piano
   };
+  static SoundSet getSet(String name) => allSet[name]!;
   static final setIcon = {
     kalimba.name: TankIcon.sound_kalimba,
     guzheng.name: TankIcon.sound_guzheng,
-    tankDrum.name: TankIcon.sound_tankdrum,
-    harp.name: TankIcon.sound_harp,
+    tankDrum.name: TankIcon.sound_tank_drum,
+    lyre.name: TankIcon.sound_lyre_harp,
     piano.name: TankIcon.sound_piano,
   };
 
