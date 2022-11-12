@@ -19,8 +19,8 @@ class SoundSet {
     return 'assets/standard_notes/$id/$name.$ext';
   }
 
-  _play(int noteIdx) {
-    PoolPlayer.playMusicSound(noteIdx, _getNotePath(noteIdx));
+  _play(int noteIdx, {forceAsync = false}) {
+    PoolPlayer.playMusicSound(_getNotePath(noteIdx), forceAsync: forceAsync);
   }
 
   static final tankDrum = SoundSet('Tank Drum', 'tankdrum', 'mp3');
@@ -60,10 +60,10 @@ class SoundSet {
       paths.add(current._getNotePath(i));
       idxList.add(i);
     }
-    PoolPlayer.loadSounds(idxList, paths);
+    PoolPlayer.loadSounds(paths);
   }
 
-  static play(int soundIdx) {
-    current._play(soundIdx);
+  static play(int soundIdx, {forceAsync = false}) {
+    current._play(soundIdx, forceAsync: forceAsync);
   }
 }

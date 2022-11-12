@@ -63,13 +63,13 @@ class _ExampleAnimatedBorderPainterState
               radius: const Radius.circular(100),
             ),
             child: ElevatedButton(
-              child: const Text('Click me also!'),
               onPressed: _startAnimation1,
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
+              child: const Text('Click me also!'),
             ),
           ),
           const SizedBox(
@@ -81,7 +81,7 @@ class _ExampleAnimatedBorderPainterState
               strokeColor: Colors.deepOrange,
               startingPercentage: 0,
               pathType: PathType.circle,
-              radius: Radius.circular(100),
+              radius: const Radius.circular(100),
               animationDirection: AnimationDirection.clockwise,
             ),
             child: SoundNoteUb(15, onTouchPlay: _startAnimation2).ui,
@@ -97,7 +97,6 @@ class AnimatedBorderPainter extends CustomPainter {
   final PathType _pathType;
   final double _strokeWidth;
   final Color _strokeColor;
-  final Radius _radius;
   final int _startingPercentage;
   final AnimationDirection _animationDirection;
 
@@ -116,7 +115,6 @@ class AnimatedBorderPainter extends CustomPainter {
         _pathType = pathType,
         _strokeWidth = strokeWidth,
         _strokeColor = strokeColor,
-        _radius = radius,
         _startingPercentage = startingPercentage,
         _animationDirection = animationDirection,
         super(repaint: animation);
@@ -161,7 +159,7 @@ class AnimatedBorderPainter extends CustomPainter {
           canvas.drawCircle(offset, 5, _paint);
         }
       } catch (error) {
-        print('error $error');
+        debugPrint('error $error');
       }
       count++;
     }
@@ -200,8 +198,8 @@ class AnimatedBorderPainter extends CustomPainter {
     Path originalPath = Path()
       ..addRRect(
         RRect.fromLTRBAndCorners(0, 0, size.width, size.height,
-            bottomLeft: Radius.circular(100),
-            bottomRight: Radius.circular(100)),
+            bottomLeft: const Radius.circular(100),
+            bottomRight: const Radius.circular(100)),
       );
     if (_startingPercentage > 0 && _startingPercentage < 100) {
       return _createPathForStartingPercentage(originalPath, PathType.rRect);

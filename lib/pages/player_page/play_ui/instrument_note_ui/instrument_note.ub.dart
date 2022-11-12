@@ -9,20 +9,23 @@ part of '../../player.page.dart';
     SF_<int>(name: 'tune'),
     SF_<bool>(name: 'isActive'),
     SF_<bool>(name: 'isWait'),
+    SF_<bool>(name: 'isPointerIn')
   ],
 )
 class _InstrumentNoteUb extends _InstrumentNote$Ub {
-  _InstrumentNoteUb(this.instrumentUc, {required this.onTouchPlay});
+  _InstrumentNoteUb(this.instrumentUc,
+      {required this.onTouchPlay, required this.onHold});
   final _InstrumentUc instrumentUc;
-  final Function() onTouchPlay;
+  final Function(_InstrumentNoteUb) onTouchPlay;
+  final Function(_InstrumentNoteUb) onHold;
 
   int get currentSoundIdx =>
       state.tune +
       state.note.deltaSoundIdx +
       instrumentUc.playState.tune +
       instrumentUc.instrument.startCycleIdx;
-  void tuneTo(int soundSet) {
-    state.tune = soundSet -
+  void tuneTo(int soundIdx) {
+    state.tune = soundIdx -
         state.note.deltaSoundIdx -
         instrumentUc.playState.tune -
         instrumentUc.instrument.startCycleIdx;
@@ -44,30 +47,42 @@ class _InstrumentNoteUb extends _InstrumentNote$Ub {
           left: left,
           width: width,
           height: height,
-          child: buildAnimationRotateChild(),
+          child: buildRotatePart(),
         ));
   }
 
-  buildAnimationRotateChild() {
+  buildRotatePart() {
     return AnimatedRotation(
       duration: moveDuration,
       curve: Curves.fastOutSlowIn,
       turns: state.note.angle / 360,
-      child: innerNote,
+      child: buildMovePart(),
     );
   }
 
-  BounceButton? _innerNote;
-  BounceButton get innerNote => _innerNote ??= buildInnerNote();
-
-  buildInnerNote() {
-    return BounceButton(
-        AnimatedContainer(
-          duration: moveDuration,
+  buildMovePart() {
+    final outerNote = AnimatedContainer(
+      duration: moveDuration,
+      child: Obx(() => Container(
           decoration: instrumentUc.instrument.buildDecoration(state.note,
               color: ctrl.getColor(state.isActive, state.isWait)),
-          child: const Center(child: SizedBox()),
-        ),
-        onTrigger: onTouchPlay);
+          child: instrumentUc.instrument
+              .buildInnerNote(state.note$, currentSoundIdx))),
+    );
+    return buildStaticPart(outerNote);
+  }
+
+  buildStaticPart(Widget child) {
+    return Center(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Obx(() => SizedBox(
+                width: constraints.maxWidth * (state.isPointerIn ? 0.9 : 1),
+                height: constraints.maxHeight * (state.isPointerIn ? 0.9 : 1),
+                child: child,
+              ));
+        },
+      ),
+    );
   }
 }

@@ -7,6 +7,22 @@ class NoteIdxSign extends StatelessWidget {
   final int idx;
   final EdgeInsets? padding;
 
+  static fromName(String name, {EdgeInsets? padding}) {
+    final parts = name.split('');
+    int idx = parts.isEmpty ? 0 : int.tryParse(parts.removeAt(0)) ?? 0;
+    if (parts.isNotEmpty) {
+      if (parts[0] == 'D') {
+        idx -= 7 * parts.length;
+      } else {
+        idx += 7 * parts.length;
+      }
+    }
+    return NoteIdxSign(
+      idx,
+      padding: padding,
+    );
+  }
+
   int get bottomCount {
     if (idx < 1) {
       return idx > 0
@@ -33,7 +49,7 @@ class NoteIdxSign extends StatelessWidget {
     return (idx % 7 == 0 ? 7 : idx % 7).toString();
   }
 
-  double get size => 15;
+  double get size => 6;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +63,14 @@ class NoteIdxSign extends StatelessWidget {
             width: width,
             height: height,
             child: FittedBox(
-              fit: BoxFit.fitHeight,
+              fit: BoxFit.scaleDown,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ...buildDot(topCount),
                   Text(
                     text,
-                    style: const TextStyle(fontSize: 50),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   ...buildDot(bottomCount, false),
                 ],
@@ -69,16 +85,13 @@ class NoteIdxSign extends StatelessWidget {
   List<Widget> buildDot(int dot, [isTop = false]) {
     return List.generate(
         dot,
-        (_) => Transform.translate(
-              offset: isTop ? const Offset(0, 0) : const Offset(0, -4),
-              child: Container(
-                width: size,
-                height: size,
-                margin: EdgeInsets.all(size / 10),
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(size)),
-              ),
+        (_) => Container(
+              width: size,
+              height: size,
+              margin: EdgeInsets.all(size / 10),
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(size)),
             ));
   }
 }

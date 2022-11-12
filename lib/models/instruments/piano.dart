@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tankdrum_learning/models/instruments/instrument.dart';
 import 'package:tankdrum_learning/models/instruments/instrument_note.dart';
 import 'package:tankdrum_learning/models/sound_note.dart';
@@ -7,12 +8,11 @@ import 'package:tankdrum_learning/tank_icon_icons.dart';
 import 'instrument_size_mode.dart';
 
 class Piano extends Instrument {
+  static const name = 'Piano';
   @override
   int get sizeMode => InstrumentSizeMode.adaptive;
   @override
   int get defaultNoteCount => 24;
-  @override
-  bool get isAllowTuning => false;
   @override
   IconData get iconData => TankIcon.instrument_piano;
 
@@ -39,7 +39,7 @@ class Piano extends Instrument {
   List<InstrumentNote> getNotes(int totalNotes) {
     final noteList = <InstrumentNote>[];
     const naturalWidth = 1 / 7;
-    const expandWidth = naturalWidth * 0.8;
+    const expandWidth = naturalWidth * 0.6;
     final totalRow = totalNotes / 12;
     final rowHeight = 1 / totalRow;
     final naturalHeight = totalRow == 1 ? 1.0 : 0.95 * rowHeight;
@@ -90,35 +90,49 @@ class Piano extends Instrument {
   }
 
   @override
-  String get name => 'Piano';
+  String get instrumentName => name;
 
   @override
-  List<int> get possibleNoteCount => [12, 24, 36, 48];
+  List<int> get noteSizeSet => [12, 24, 36, 48];
 
   @override
   List<List<int>> playableNoteSet(Set<int> soundIdxSet) {
     final list = soundIdxSet.toList()..sort();
     int getRange(int soundIDx) {
-      if (soundIDx > 36) {
-        return 3;
-      } else if (soundIDx > 24) {
-        return 2;
-      } else if (soundIDx > 12) {
-        return 1;
+      return soundIDx ~/ 12;
+    }
+
+    List<int> getNoteSetByRange(int from, int to) {
+      final result = <int>[];
+      List<int> notesInRange(int rangeIdx) {
+        return List.generate(12, (index) => 12 * rangeIdx + index);
       }
-      return 0;
+
+      for (int i = from; i <= to; i++) {
+        result.addAll(notesInRange(i));
+      }
+      return result;
     }
 
-    List<int> getListInRange(int rangeIdx) {
-      return List.generate(12, (index) => 12 * rangeIdx + index);
-    }
+    int from = getRange(list.first);
+    int to = getRange(list.last);
+    List<List<int>> result = [];
+    result.add(getNoteSetByRange(from, to));
+    return result;
+  }
 
-    final from = getRange(list.first);
-    final to = getRange(list.last);
-    final tracingList = <int>[];
-    for (int i = from; i <= to; i++) {
-      tracingList.addAll(getListInRange(i));
-    }
-    return [tracingList];
+  @override
+  Widget buildInnerNote(Rx<InstrumentNote> note, int soundIdx) {
+    return SizedBox();
+    // Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+    //   SizedBox(
+    //     width: 40,
+    //     height: 40,
+    //     child: SoundNameText(
+    //       SoundNote.getNoteName(soundIdx),
+    //       style: const TextStyle(fontSize: 15, color: Colors.pink),
+    //     ),
+    //   )
+    // ]);
   }
 }

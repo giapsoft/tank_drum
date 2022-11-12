@@ -4,7 +4,7 @@ class _PlayerPc extends _Player$Ctrl {
   @override
   postConstruct() {
     state.gesture$.listen((p0) {
-      print(p0);
+      debugPrint(p0);
     });
   }
 

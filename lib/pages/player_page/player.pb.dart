@@ -27,7 +27,6 @@ class PlayerBuilder extends Player$Builder {
               ],
             ),
       body: ctrl.body,
-      drawer: const SideBar(),
     );
   }
 }

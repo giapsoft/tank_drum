@@ -43,7 +43,6 @@ class _BounceButtonState extends State<BounceButton>
   }
 
   trigger() async {
-    widget.onTrigger();
     _controller.forward();
     await Future.delayed(const Duration(milliseconds: 100));
     _controller.reverse();
@@ -56,15 +55,12 @@ class _BounceButtonState extends State<BounceButton>
     _scale = 1 - _controller.value;
     return LayoutBuilder(
       builder: (context, constraints) {
-        return GestureDetector(
-          onTapUp: (_) => trigger(),
-          child: Transform.scale(
-            scale: _scale,
-            child: SizedBox(
-              width: constraints.maxWidth * _scale,
-              height: constraints.maxHeight * _scale,
-              child: widget.child,
-            ),
+        return Transform.scale(
+          scale: _scale,
+          child: SizedBox(
+            width: constraints.maxWidth * _scale,
+            height: constraints.maxHeight * _scale,
+            child: widget.child,
           ),
         );
       },

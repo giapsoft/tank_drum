@@ -3,8 +3,8 @@ part of '../player.page.dart';
 @Ui_(state: [
   SF_<PlayMode>(name: 'playMode'),
   SF_<String>(name: 'soundSetName', init: 'Kalimba'),
-  SF_<List<int>>(name: 'possibleNoteCount'),
-  SF_<String>(name: 'instrumentName', init: 'Kalimba'),
+  SF_<List<int>>(name: 'noteSizeSet'),
+  SF_<String>(name: 'instrumentName', init: 'Tank Drum'),
   SF_<List<SongSentence>>(name: 'sentences'),
   SF_<List<String>>(name: 'playableInstruments'),
   SF_<List<List<int>>>(name: 'playableNoteSet'),
@@ -15,7 +15,6 @@ part of '../player.page.dart';
   SF_<int>(name: 'tune'),
 ])
 class _PlayUb extends _Play$Ub {
-  Instrument get instrument => Instrument.getInstrument(state.instrumentName);
   double barWidth = 0.0;
   double width = 0.0;
   double height = 0.0;
@@ -44,7 +43,7 @@ class _PlayUb extends _Play$Ub {
                   left: isPortrait ? 0 : barWidth,
                   width: isPortrait ? width : width - barWidth,
                   height: isPortrait ? height - barWidth : height,
-                  child: children.instrument.ui)
+                  child: children.instrument.ui),
             ],
           ),
         );
@@ -92,8 +91,21 @@ class _PlayUb extends _Play$Ub {
   }
 
   buildPlayModeButton() {
-    return buildButton(Obx(() =>
-        IconButton(onPressed: () {}, icon: Icon(state.playMode.iconData))));
+    return buildButton(Obx(() => IconButton(
+        onPressed: () {
+          buildDialog(() => ListView(
+                children: ctrl.songs.keys.map((name) {
+                  return ListTile(
+                    title: Text(name),
+                    onTap: () {
+                      state.sentences = ctrl.songs[name]!;
+                      Get.back();
+                    },
+                  );
+                }).toList(),
+              ));
+        },
+        icon: Icon(state.playMode.iconData))));
   }
 
   Widget buildSoundSetButton() {
@@ -124,13 +136,24 @@ class _PlayUb extends _Play$Ub {
 
   Widget buildInstrumentButton() {
     Widget buildInstrument(String name, IconData icon) {
+      final disabled = !ctrl.hasInstrument(name);
       return Obx(() => TextButton(
             style: ButtonStyle(
-                foregroundColor: MaterialStateColor.resolveWith((states) =>
-                    name == state.instrumentName ? Colors.pink : Colors.black)),
-            onPressed: () {
-              state.instrumentName = name;
-            },
+                foregroundColor: MaterialStateColor.resolveWith(
+                    (states) => name == state.instrumentName
+                        ? Colors.pink
+                        : disabled
+                            ? Colors.grey
+                            : Colors.black)),
+            onPressed: disabled
+                ? null
+                : () {
+                    ctrl.setInstrumentName(name);
+                    if (state.sentences.isNotEmpty &&
+                        state.playableNoteSet.length <= 1) {
+                      Get.back();
+                    }
+                  },
             child: Row(
               children: [
                 Icon(icon),
@@ -151,10 +174,9 @@ class _PlayUb extends _Play$Ub {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildInstrument(Instrument.kalimba, TankIcon.instrument_kalimba),
-              buildInstrument(Instrument.piano, TankIcon.instrument_piano),
-              buildInstrument(
-                  Instrument.tankDrum, TankIcon.instrument_tank_drum)
+              buildInstrument(Kalimba.name, TankIcon.instrument_kalimba),
+              buildInstrument(Piano.name, TankIcon.instrument_piano),
+              buildInstrument(TankDrum.name, TankIcon.instrument_tank_drum)
             ]),
       );
     }
@@ -171,26 +193,31 @@ class _PlayUb extends _Play$Ub {
                 Wrap(
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    children: ctrl.instrument.possibleNoteCount
-                        .map((e) => FittedBox(
-                                child: TextButton(
-                              style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateColor.resolveWith((states) =>
-                                          e == state.instrumentNotes.length
-                                              ? Colors.pink
-                                              : Colors.black)),
-                              onPressed: () {
-                                state.instrumentNotes =
-                                    ctrl.instrument.getNotes(e);
+                    children: ctrl.instrument.noteSizeSet.map((e) {
+                      final disabled = !ctrl.hasNoteSetSize(e);
+                      return FittedBox(
+                          child: TextButton(
+                        style: ButtonStyle(foregroundColor:
+                            MaterialStateColor.resolveWith((states) {
+                          return e == state.instrumentNotes.length
+                              ? Colors.pink
+                              : disabled
+                                  ? Colors.grey
+                                  : Colors.black;
+                        })),
+                        onPressed: disabled
+                            ? null
+                            : () {
+                                ctrl.setInstrumentNotes(
+                                    ctrl.instrument.getNotes(e));
                                 Get.back();
                               },
-                              child: Row(children: [
-                                const Icon(Icons.music_note),
-                                Text(e.toString())
-                              ]),
-                            )))
-                        .toList()),
+                        child: Row(children: [
+                          const Icon(Icons.music_note),
+                          Text(e.toString())
+                        ]),
+                      ));
+                    }).toList()),
               ],
             )),
       );
@@ -207,7 +234,7 @@ class _PlayUb extends _Play$Ub {
                     ],
                   ));
             },
-            icon: Icon(instrument.iconData))),
+            icon: Icon(ctrl.instrument.iconData))),
         padding: 4.0);
   }
 }

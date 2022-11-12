@@ -13,7 +13,6 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   soundpool: ^2.3.0
-  audioplayers: ^1.0.1
   synchronized: ^3.0.0+2
   g_entities:
     path: ../flutter_frameworks/entities

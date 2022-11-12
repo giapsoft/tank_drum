@@ -1,13 +1,13 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:g_components/components.dart';
 import 'package:g_pages/pages.dart';
 import 'package:get/get.dart';
-import '../../models/song_player.dart';
-import '../../models/sound_note.dart';
+
 import '../../models/note_link_type.dart';
-import '../../models/song_lib.dart';
 import '../../models/song_note.dart';
+import '../../models/song_player.dart';
 import '../../widgets/draging_sound.dart';
 import '../../widgets/sound_name_text.dart';
 import '../../widgets/sound_note_ui/sound_note.ub.dart';

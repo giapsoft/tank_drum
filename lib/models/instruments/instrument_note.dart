@@ -6,6 +6,7 @@ class InstrumentNote {
   double angle;
   int posIdx;
   int deltaSoundIdx;
+  String deltaName;
 
   InstrumentNote({
     this.posIdx = 0,
@@ -15,6 +16,7 @@ class InstrumentNote {
     this.height = 0,
     this.deltaSoundIdx = -1,
     this.angle = 0,
+    this.deltaName = '',
   });
 
   @override

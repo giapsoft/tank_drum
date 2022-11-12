@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
 class SoundNameText extends StatelessWidget {
-  const SoundNameText(this.soundName, {this.style, this.isVertical, Key? key})
+  const SoundNameText(this.soundName,
+      {this.style, this.isVertical, this.showIdx = true, Key? key})
       : super(key: key);
   final String soundName;
+  final bool showIdx;
   final TextStyle? style;
   final bool? isVertical;
 
   TextStyle get textStyle =>
       style ?? const TextStyle(color: Color.fromARGB(255, 255, 255, 255));
   String get firstLetter => soundName.isNotEmpty ? soundName[0] : "";
-  String get remainLetters =>
-      soundName.length > 1 ? soundName.substring(1) : "";
+  String get remainLetters => showIdx
+      ? soundName.substring(1)
+      : soundName.substring(1, soundName.length - 1);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,10 @@ class SoundNameText extends StatelessWidget {
       fit: BoxFit.contain,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: soundName.split("").map((e) => Text(e)).toList(),
+        children: [
+          Text(firstLetter),
+          ...remainLetters.split("").map((e) => Text(e)).toList()
+        ],
       ),
     );
   }

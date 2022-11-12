@@ -5,32 +5,20 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tankdrum_learning/models/instruments/instrument.dart';
-import 'package:tankdrum_learning/models/song_lib.dart';
+import 'package:tankdrum_learning/models/instruments/piano.dart';
 import 'package:tankdrum_learning/models/sound_note.dart';
+import 'package:tankdrum_learning/utils/math_utils.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
-}
-
-testFindSoundSet() {
-  final instrument = Instrument.getInstrument(Instrument.tankDrum);
-  traceSoundSet(Set<int> idxSet) {
-    print('source: $idxSet, length: ${idxSet.length}');
-    final result =
-        SoundNote.findProperSoundSet(instrument.deltaCycleIdx, idxSet, 15);
-    print('length: ${result.length}, result: $result');
-  }
-
-  // traceSoundSet({5, 6, 7, 4, 7, 2, 21, 4});
-  // traceSoundSet({33, 45, 32, 45, 67, 44, 22, 46, 48, 65});
-  // traceSoundSet({33, 45, 32, 45, 44, 22, 46, 48});
-  // traceSoundSet({27, 29, 31, 32, 34, 36, 38, 39, 41, 43, 44, 46});
-  // traceSoundSet(SongLib.happyBirthDay.map((e) => e.soundIdx).toSet());
-  // traceSoundSet(SongLib.castleInTheSky.map((e) => e.soundIdx).toSet());
-  // traceSoundSet(SongLib.endlessLove.map((e) => e.soundIdx).toSet());
-  // traceSoundSet(SongLib.proudOfYou.map((e) => e.soundIdx).toSet());
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    print(
+        MathUtils.baiToan1(a: 2, b: 2, a2: 3.225, b2: 3.225, degree: 360 + 45));
+  });
 }
 
 testFillDelta1() {
@@ -61,7 +49,7 @@ fillTank() {
       count++;
     }
   }
-  const tank15 = 'F#3,A3,C#5,C#4,E5,E4,F#5,F#4,D5,D4,B4,B3,G4,G3,A4';
+  const tank15 = 'F#3,G3,A3,B3,C#4,D4,E4,F#4,G4,A4,B4,C#5,D5,E5,F#5';
   const tank9 = 'A3,C4,C5,D4,E5,G4,D5,E4,A4';
   const kalimba21 =
       'G#3,A#3,C4,C#4,D#4,F4,G4,G#4,A#4,C5,C#5,D#5,F5,G5,G#5,A#5,C6,C#6,D#6,F6,G6';

@@ -35,77 +35,17 @@ class SoundNote {
     return result;
   }
 
-  static List<int> getCycle(int cycleIdx, int tune) {
-    final deltaCycle = getDeltaCycle(cycleIdx);
-    final startIdx = getStartIdxOfCycle(cycleIdx);
-    final result = <int>[startIdx + tune];
-    for (int i = 1; i < deltaCycle.length; i++) {
-      result.add(result[i - 1] + deltaCycle[i - 1]);
+  static List<int> genDeltaSoundsCoverRange(
+    int cycleIdx, {
+    int firstIdx = 0,
+    required int lastIdx,
+  }) {
+    List<int> tracingList = [firstIdx];
+    int length = 1;
+    while (tracingList.last < lastIdx) {
+      tracingList = genDeltaListByLength(cycleIdx, length++, first: firstIdx);
     }
-    return result;
-  }
-
-  static List<int> getNoteSign(int cycleIdx, int tune, int noteIdx) {
-    final cycle = getCycle(cycleIdx, tune);
-    int count = 0;
-    while (noteIdx < cycle.first) {
-      noteIdx -= 12 * count--;
-    }
-    if (count == 0) {
-      while (noteIdx > cycle.last) {
-        noteIdx -= 12 * count++;
-      }
-      if (count != 0) {
-        count--;
-      }
-    }
-
-    for (int i = 0; i < cycle.length; i++) {
-      if (i == 0) {
-        if (noteIdx >= cycle.first && noteIdx < cycle[1]) {
-          return [count, i + 1];
-        }
-      } else if (noteIdx < cycle[i] && noteIdx >= cycle[i - 1]) {
-        return [count, i];
-      }
-    }
-    return [0, 0];
-  }
-
-  static List<List<int>> genNotesContainsList(
-      List<int> deltaCycle, List<int> sortedIdxList, int expectTotal) {
-    final tracingList = [sortedIdxList.first];
-    Iterator<int> cycleLooper = deltaCycle.iterator;
-    int getNextDelta() {
-      if (!cycleLooper.moveNext()) {
-        cycleLooper = deltaCycle.iterator;
-        cycleLooper.moveNext();
-      }
-      return cycleLooper.current;
-    }
-
-    int count = 1;
-    int soundIdxCount = 1;
-    final result = <List<int>>[];
-    while (soundIdxCount < sortedIdxList.length ||
-        tracingList.length < expectTotal) {
-      final delta = getNextDelta();
-      tracingList.add(tracingList[count - 1] + delta);
-      if (soundIdxCount < sortedIdxList.length) {
-        final idx = sortedIdxList[soundIdxCount];
-        if (tracingList.contains(idx)) {
-          soundIdxCount++;
-        } else if (tracingList[count] > idx) {
-          tracingList[count] = idx;
-          soundIdxCount++;
-        }
-      } else {
-        result.add([...tracingList]);
-      }
-
-      count++;
-    }
-    return result;
+    return tracingList;
   }
 
   static List<int> genDeltaListByLength(int cycleIdx, int length,
@@ -119,30 +59,34 @@ class SoundNote {
     return result;
   }
 
-  static List<List<int>> findProperSoundSet(
-      int deltaCycleMove, Set<int> soundIdxSet, int expectCount) {
-    final deltaCycle = getDeltaCycle(deltaCycleMove);
+  static List<List<int>> findProperSoundSet(int deltaIdx,
+      {required Set<int> soundIdxSet,
+      required List<int> possibleSizes,
+      isSingle = false}) {
     final list = soundIdxSet.toList();
     list.sort();
-    int minDiffSize = soundIdxSet.length;
-    List<List<int>> notes = [];
+    List<int> notes = [];
     List<List<int>> result = [];
 
     for (int i = 0; i < 12; i++) {
-      final listToScan = i == 0 ? [...list] : [list.first - i, ...list];
-      int diffSize = 0;
-      notes = genNotesContainsList(deltaCycle, listToScan, expectCount);
-      final originalList = genDeltaListByLength(deltaCycleMove, notes.length,
-          first: listToScan.first);
-      diffSize = NumberUt.countNotInList(originalList, notes.first);
-
-      if (diffSize < minDiffSize) {
-        minDiffSize = diffSize;
-        result = [...notes];
+      notes = genDeltaSoundsCoverRange(deltaIdx,
+          firstIdx: list.first - i, lastIdx: list.last);
+      if (NumberUt.containsAll(notes, child: list)) {
+        break;
+      }
+    }
+    if (notes.isNotEmpty) {
+      if (possibleSizes.contains(notes.length)) {
+        result.add(notes);
       }
 
-      if (diffSize == 0) {
-        return notes;
+      while (possibleSizes.last > notes.length) {
+        int nextSize =
+            possibleSizes.firstWhere((element) => element > notes.length);
+        notes = genDeltaListByLength(deltaIdx, nextSize, first: notes.first);
+        if ((isSingle && result.isEmpty) || !isSingle) {
+          result.add(notes);
+        }
       }
     }
     return result;

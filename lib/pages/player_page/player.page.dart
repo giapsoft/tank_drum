@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:g_pages/pages.dart';
 import 'package:get/get.dart';
+import 'package:synchronized/extension.dart';
+import 'package:tankdrum_learning/models/instruments/kalimba.dart';
+import 'package:tankdrum_learning/models/instruments/piano.dart';
+import 'package:tankdrum_learning/models/instruments/tank_drum.dart';
 import 'package:tankdrum_learning/models/play_mode.dart';
 import 'package:tankdrum_learning/models/song_sentence.dart';
 import 'package:tankdrum_learning/tank_icon_icons.dart';
-import 'package:tankdrum_learning/widgets/bounce_button.dart';
+import 'package:tankdrum_learning/utils/math_utils.dart';
 
 import '../../entities/song.dart';
 import '../../models/instruments/instrument.dart';
@@ -15,9 +19,7 @@ import '../../models/instruments/instrument_note.dart';
 import '../../models/pool_player.dart';
 import '../../models/song_lib.dart';
 import '../../models/song_player.dart';
-import '../../models/sound_note.dart';
 import '../../models/sound_set.dart';
-import '../../widgets/side_bar.dart';
 import '../../widgets/sound_note_ui/sound_note.ub.dart';
 
 part '../_generated/player_page/config_ui/config._.dart';

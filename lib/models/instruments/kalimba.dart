@@ -1,9 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tankdrum_learning/models/instruments/instrument_size_mode.dart';
 import 'package:tankdrum_learning/tank_icon_icons.dart';
+import 'package:tankdrum_learning/widgets/sound_name_text.dart';
 
+import '../../widgets/note_idx_sign.dart';
 import '../sound_note.dart';
 import 'instrument.dart';
 import 'instrument_note.dart';
@@ -18,7 +21,7 @@ class Kalimba extends Instrument {
   BoxDecoration buildDecoration(InstrumentNote note, {Color? color}) {
     return BoxDecoration(
         border: Border.all(),
-        color: const Color.fromARGB(255, 2, 162, 190),
+        color: color ?? const Color.fromARGB(255, 2, 162, 190),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(200),
           bottomRight: Radius.circular(200),
@@ -26,25 +29,20 @@ class Kalimba extends Instrument {
   }
 
   @override
-  bool get isAllowTuning => true;
-  @override
   List<InstrumentNote> getNotes(int totalNotes) {
-    const maxHeight = 1;
-    const minHeight = 0.35;
+    const maxHeight = 0.4;
+    const minHeight = 0.2;
     final noteList = <InstrumentNote>[];
-
-    double widthHolder = min(1 / possibleNoteCount.last, 1 / totalNotes);
+    double widthRate = 1.0;
+    double widthHolder = min(1 / 10, 1 / totalNotes);
     double paddingLeft = (1 - widthHolder * totalNotes) / 2;
-    double width = 1 * widthHolder;
+    double width = widthRate * widthHolder;
     double padding = (widthHolder - width) / 2;
-    double heightStep = (maxHeight - minHeight) / (totalNotes / 2).ceil();
     int halfNotes = (totalNotes / 2 + 1).floor();
+    final a = (maxHeight - minHeight) / pow(halfNotes, 2);
     for (int i = 1; i <= totalNotes; i++) {
-      final x = (i * 0.4) / halfNotes;
-      double height =
-          ((totalNotes * 1.8) / 21) * x * x / (totalNotes * heightStep) +
-              minHeight;
-      minHeight + heightStep * i; //
+      double height = a * pow(i, 2) + minHeight;
+      debugPrint('height: $height, a $a');
       if (i > halfNotes) {
         final symetricI = halfNotes - (i - halfNotes) - 1;
         final symetricHeight = noteList[symetricI].height;
@@ -55,7 +53,7 @@ class Kalimba extends Instrument {
         }
       }
       final note = InstrumentNote();
-      note.top = 0.0;
+      note.top = 0.55;
       note.left = paddingLeft + padding + (i - 1) * (width + 2 * padding);
       note.width = width;
       note.height = height;
@@ -96,12 +94,14 @@ class Kalimba extends Instrument {
   }
 
   @override
-  List<int> get possibleNoteCount {
+  List<int> get noteSizeSet {
     return [7, 11, 17, 21];
   }
 
+  static const name = 'Kalimba';
+
   @override
-  String get name => Instrument.kalimba;
+  String get instrumentName => name;
 
   @override
   int get defaultNoteCount => 21;
@@ -109,10 +109,34 @@ class Kalimba extends Instrument {
   @override
   List<List<int>> playableNoteSet(Set<int> soundIdxSet) {
     final properIdxSet = SoundNote.findProperSoundSet(
-        deltaCycleIdx, soundIdxSet, possibleNoteCount.last);
-    if (possibleNoteCount.last < properIdxSet.first.length) {
-      return [];
-    }
+      deltaCycleIdx,
+      possibleSizes: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+      soundIdxSet: soundIdxSet,
+      isSingle: true,
+    );
     return properIdxSet;
+  }
+
+  @override
+  Widget buildInnerNote(Rx<InstrumentNote> note, int soundIdx) {
+    return Obx(() => note.value.deltaSoundIdx < 0
+        ? const SizedBox()
+        : FittedBox(
+            alignment: Alignment.bottomCenter,
+            fit: BoxFit.contain,
+            child: Column(children: [
+              SoundNameText(
+                SoundNote.getNoteName(soundIdx),
+                isVertical: true,
+                showIdx: false,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(171, 209, 255, 249),
+                    borderRadius: BorderRadius.circular(99)),
+                child: NoteIdxSign(note.value.posIdx + 1),
+              )
+            ]),
+          ));
   }
 }

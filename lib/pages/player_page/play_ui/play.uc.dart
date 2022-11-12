@@ -2,8 +2,9 @@ part of '../player.page.dart';
 
 class _PlayUc extends _Play$Ctrl {
   late SongPlayer player;
-
-  Instrument get instrument => Instrument.getInstrument(state.instrumentName);
+  Instrument? _instrument;
+  Instrument get instrument =>
+      _instrument ??= Instrument.getInstrument(state.instrumentName);
 
   int get barSize => 4;
   double get smallBarSize => 1 / barSize;
@@ -11,7 +12,7 @@ class _PlayUc extends _Play$Ctrl {
   SoundSet get soundSet => SoundSet.getSet(state.soundSetName);
 
   @override
-  close() {
+  close() async {
     PoolPlayer.realeaseAllSounds();
   }
 
@@ -26,6 +27,7 @@ class _PlayUc extends _Play$Ctrl {
   @override
   postConstruct() {
     state.sentences$.listen((_) {
+      children.instrument.ctrl.resetTune();
       final soundIdxList = state.sentences
           .map((e) =>
               e.notes.map((e) => e.soundIdxList).expand((element) => element))
@@ -35,51 +37,82 @@ class _PlayUc extends _Play$Ctrl {
         ..sort();
       final soundIdxSet = soundIdxList.toSet();
       state.isPlaying = false;
+      player.reset(songSentences: state.sentences);
       if (state.sentences.isEmpty) {
         state.playMode = PlayMode.free;
-        state.instrumentNotes =
-            instrument.getNotes(instrument.defaultNoteCount);
+        setInstrumentNotes(instrument.getNotes(instrument.defaultNoteCount));
       } else {
         state.playMode = PlayMode.training;
         state.playableInstruments = Instrument.playableInstruments(soundIdxSet);
-        if (state.playableInstruments.contains(state.instrumentName)) {
-          state.instrumentName = state.playableInstruments.first;
+        if (!state.playableInstruments.contains(state.instrumentName)) {
+          setInstrumentName(state.playableInstruments.first,
+              refreshSentences: false);
         }
         state.playableNoteSet = instrument.playableNoteSet(soundIdxSet);
-
         final notes = state.playableNoteSet.firstWhere(
             (element) => element.length == state.instrumentNotes.length,
             orElse: () => state.playableNoteSet.first);
-        state.instrumentNotes = instrument.getNotes(notes.length);
+        setInstrumentNotes(instrument.getNotes(notes.length));
       }
-    });
-
-    state.instrumentName$.listen((p0) {
-      state.possibleNoteCount = instrument.possibleNoteCount;
-      state.sentences$.refresh();
     });
 
     player = SongPlayer(
       isSilence: true,
+      onTouchedWaiter: (idx) {
+        children.instrument.ctrl.getNoteBySoundIdx(idx).ctrl.inactive();
+      },
+      onNextNote: () {
+        children.instrument.ctrl.deques([
+          player.prevNote?.soundIdxList,
+          player.currentNote?.soundIdxList,
+        ]);
+        children.instrument.ctrl.inactive(player.prevNote?.soundIdxList);
+        children.instrument.ctrl.active(player.currentNote?.soundIdxList);
+        children.instrument.ctrl.queue(player.nextNote?.soundIdxList);
+      },
       onFinish: () async {
         state.isPlaying = false;
         await Future.delayed(const Duration(seconds: 2));
-        children.instrument.ctrl.inactiveAll();
+        children.instrument.ctrl.resetNoteStatus();
       },
     );
   }
 
-  onDrag(DragUpdateDetails details) {
-    drag(details.globalPosition);
+  updateHelper() {
+    if (state.sentences.isEmpty) return;
+    final notes = state.playableNoteSet.firstWhere(
+        (element) => element.length == state.instrumentNotes.length,
+        orElse: () => state.playableNoteSet.first);
+    children.instrument.ctrl.tuneTo(notes);
+    children.instrument.ctrl.active(player.currentNote?.soundIdxList);
+    children.instrument.ctrl.queue(player.nextNote?.soundIdxList);
   }
 
-  startDrag(DragStartDetails details) {
-    drag(details.globalPosition);
-  }
-
-  drag(Offset offset) async {
-    for (var note in children.instrument.ctrl.currentUbs) {
-      note.ctrl.swipe(offset);
+  setInstrumentName(String name, {refreshSentences = true}) {
+    _instrument = Instrument.getInstrument(name);
+    state.instrumentName = name;
+    state.noteSizeSet = instrument.noteSizeSet;
+    if (refreshSentences) {
+      state.sentences$.refresh();
     }
+  }
+
+  setInstrumentNotes(List<InstrumentNote> notes) {
+    state.instrumentNotes = notes;
+    children.instrument.ctrl.setInstrumentNotes(notes);
+    updateHelper();
+  }
+
+  touchIdx(int soundIdx) {
+    player.touchIdx(soundIdx);
+  }
+
+  bool hasNoteSetSize(int length) {
+    return state.playMode.isFree ||
+        state.playableNoteSet.any((e) => e.length == length);
+  }
+
+  bool hasInstrument(String name) {
+    return state.playMode.isFree || state.playableInstruments.contains(name);
   }
 }

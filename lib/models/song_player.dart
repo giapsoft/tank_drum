@@ -6,9 +6,15 @@ class SongPlayer {
   List<SongSentence> sentences = [];
   List<SongNote> get notes => currentSentence?.notes ?? [];
   SongSentence? get currentSentence =>
-      currentSentenceIdx >= 0 && currentSentenceIdx < sentences.length - 1
+      currentSentenceIdx >= 0 && currentSentenceIdx < sentences.length
           ? sentences[currentSentenceIdx]
           : null;
+  SongSentence? get nextSentence =>
+      currentSentenceIdx >= 0 && currentSentenceIdx < sentences.length - 1
+          ? sentences[currentSentenceIdx + 1]
+          : null;
+  SongSentence? get prevSentence =>
+      currentSentenceIdx > 0 ? sentences[currentSentenceIdx - 1] : null;
 
   bool _isPlaying = false;
   Function()? onFinish;
@@ -19,7 +25,7 @@ class SongPlayer {
   Function()? onEndNote;
   Function()? onNextNote;
   Function()? onNextSentence;
-  Function(int)? onTouchedIdx;
+  Function(int)? onTouchedWaiter;
   int bpm = 100;
   bool isSilence;
   int tune = 0;
@@ -32,7 +38,7 @@ class SongPlayer {
     this.onStop,
     this.onStartNote,
     this.onEndNote,
-    this.onTouchedIdx,
+    this.onTouchedWaiter,
     this.onNextNote,
   });
 
@@ -53,15 +59,23 @@ class SongPlayer {
     sentences = songSentences ?? [];
     _currentNoteIdx = 0;
     currentSentenceIdx = 0;
+    updateWaitingIdx();
   }
 
   int _currentNoteIdx = 0;
   int currentSentenceIdx = 0;
 
   SongNote? get currentNote => _getNote(_currentNoteIdx);
-  SongNote? get prevNote => _getNote(_currentNoteIdx - 1);
-  SongNote? get nextNote => _getNote(_currentNoteIdx + 1);
-  SongNote? get nextNote2 => _getNote(_currentNoteIdx + 2);
+  SongNote? get prevNote => _currentNoteIdx > 0
+      ? _getNote(_currentNoteIdx - 1)
+      : prevSentence?.lastNote;
+  SongNote? get nextNote {
+    if (_currentNoteIdx < (currentSentence?.notes.length ?? 0) - 1) {
+      return _getNote(_currentNoteIdx + 1);
+    }
+    return nextSentence?.firstNote;
+  }
+
   SongNote? _getNote(int idx) {
     return (notes.isNotEmpty && notes.length > idx) ? notes[idx] : null;
   }
@@ -83,25 +97,29 @@ class SongPlayer {
   }
 
   List<int> waitingIdx = [];
+  updateWaitingIdx() {
+    waitingIdx = [...(currentNote?.soundIdxList ?? [])];
+  }
+
   _nextNote() {
     if (currentSentence != null) {
       if (_currentNoteIdx < currentSentence!.notes.length - 1) {
         _currentNoteIdx++;
       } else {
         currentSentenceIdx++;
-        _run(onNextSentence);
         _currentNoteIdx = 0;
+        _run(onNextSentence);
       }
-      waitingIdx = currentNote?.soundIdxList ?? [];
+      updateWaitingIdx();
       _run(onNextNote);
     }
   }
 
   touchIdx(int idx) {
-    waitingIdx.removeWhere((waitingIdx) {
-      if (waitingIdx == idx + tune) {
-        if (onTouchedIdx != null) {
-          onTouchedIdx!(waitingIdx);
+    waitingIdx.removeWhere((waiter) {
+      if (waiter == idx + tune) {
+        if (onTouchedWaiter != null) {
+          onTouchedWaiter!(waiter);
         }
         return true;
       }
