@@ -22,40 +22,30 @@ class _PlayUc extends _Play$Ctrl {
     'Endless Love': SongLib.endlessLove,
     'Happy Birth Day': SongLib.happyBirthDay,
     'Proud Of You': SongLib.proudOfYou,
+    'kishimete': SongLib.kishimete,
+    'chanhLongThuongCo': SongLib.chanhLongThuongCo,
+    'tuyHongNhan': SongLib.tuyHongNhan,
+    'taCoHenVoiThang5': SongLib.taCoHenVoiThang5,
+    'namNgoaiGioNay': SongLib.namNgoaiGioNay,
   };
+
+  bool get isFixedSong {
+    return [
+      'kishimete',
+      'chanhLongThuongCo',
+      'tuyHongNhan',
+      'taCoHenVoiThang5',
+      'namNgoaiGioNay'
+    ].contains(state.songName);
+  }
+
+  setSong(String name) {
+    state.songName = name;
+    setSentences(songs[name]!);
+  }
 
   @override
   postConstruct() {
-    state.sentences$.listen((_) {
-      children.instrument.ctrl.resetTune();
-      final soundIdxList = state.sentences
-          .map((e) =>
-              e.notes.map((e) => e.soundIdxList).expand((element) => element))
-          .expand((element) => element)
-          .toSet()
-          .toList()
-        ..sort();
-      final soundIdxSet = soundIdxList.toSet();
-      state.isPlaying = false;
-      player.reset(songSentences: state.sentences);
-      if (state.sentences.isEmpty) {
-        state.playMode = PlayMode.free;
-        setInstrumentNotes(instrument.getNotes(instrument.defaultNoteCount));
-      } else {
-        state.playMode = PlayMode.training;
-        state.playableInstruments = Instrument.playableInstruments(soundIdxSet);
-        if (!state.playableInstruments.contains(state.instrumentName)) {
-          setInstrumentName(state.playableInstruments.first,
-              refreshSentences: false);
-        }
-        state.playableNoteSet = instrument.playableNoteSet(soundIdxSet);
-        final notes = state.playableNoteSet.firstWhere(
-            (element) => element.length == state.instrumentNotes.length,
-            orElse: () => state.playableNoteSet.first);
-        setInstrumentNotes(instrument.getNotes(notes.length));
-      }
-    });
-
     player = SongPlayer(
       isSilence: true,
       onTouchedWaiter: (idx) {
@@ -66,7 +56,6 @@ class _PlayUc extends _Play$Ctrl {
           player.prevNote?.soundIdxList,
           player.currentNote?.soundIdxList,
         ]);
-        children.instrument.ctrl.inactive(player.prevNote?.soundIdxList);
         children.instrument.ctrl.active(player.currentNote?.soundIdxList);
         children.instrument.ctrl.queue(player.nextNote?.soundIdxList);
       },
@@ -74,12 +63,48 @@ class _PlayUc extends _Play$Ctrl {
         state.isPlaying = false;
         await Future.delayed(const Duration(seconds: 2));
         children.instrument.ctrl.resetNoteStatus();
+        state.sentences = [];
       },
     );
+
+    setInstrumentName(state.instrumentName, refreshSentences: false);
+    setSong('taCoHenVoiThang5');
+    state.isGameMode = true;
+  }
+
+  setSentences(List<SongSentence> sentences) {
+    state.sentences = sentences;
+    children.instrument.ctrl.resetTune();
+    if (isFixedSong || state.sentences.isEmpty) {
+      state.playMode = PlayMode.free;
+      setInstrumentNotes(instrument.getNotes(instrument.defaultNoteCount));
+      return;
+    }
+    final soundIdxList = state.sentences
+        .map((e) =>
+            e.notes.map((e) => e.soundIdxList).expand((element) => element))
+        .expand((element) => element)
+        .toSet()
+        .toList()
+      ..sort();
+    final soundIdxSet = soundIdxList.toSet();
+    state.isPlaying = false;
+    player.reset(songSentences: state.sentences);
+    state.playMode = PlayMode.training;
+    state.playableInstruments = Instrument.playableInstruments(soundIdxSet);
+    if (!state.playableInstruments.contains(state.instrumentName)) {
+      setInstrumentName(state.playableInstruments.first,
+          refreshSentences: false);
+    }
+    state.playableNoteSet = instrument.playableNoteSet(soundIdxSet);
+    final notes = state.playableNoteSet.firstWhere(
+        (element) => element.length == state.instrumentNotes.length,
+        orElse: () => state.playableNoteSet.first);
+    setInstrumentNotes(instrument.getNotes(notes.length));
   }
 
   updateHelper() {
-    if (state.sentences.isEmpty) return;
+    if (state.sentences.isEmpty || state.playableNoteSet.isEmpty) return;
     final notes = state.playableNoteSet.firstWhere(
         (element) => element.length == state.instrumentNotes.length,
         orElse: () => state.playableNoteSet.first);
@@ -93,7 +118,7 @@ class _PlayUc extends _Play$Ctrl {
     state.instrumentName = name;
     state.noteSizeSet = instrument.noteSizeSet;
     if (refreshSentences) {
-      state.sentences$.refresh();
+      setSentences(state.sentences);
     }
   }
 
@@ -103,8 +128,16 @@ class _PlayUc extends _Play$Ctrl {
     updateHelper();
   }
 
-  touchIdx(int soundIdx) {
-    player.touchIdx(soundIdx);
+  touchNote(_InstrumentNoteUb noteUb) {
+    final soundIdx = noteUb.currentSoundIdx;
+    if (state.isSingleMode) {
+      if (!player.playAllWaiterIfMatchLast(soundIdx)) {
+        SoundSet.play(soundIdx);
+      }
+    } else {
+      SoundSet.play(soundIdx);
+      player.touchIdx(soundIdx);
+    }
   }
 
   bool hasNoteSetSize(int length) {

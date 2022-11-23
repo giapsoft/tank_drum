@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ogg_piano/flutter_ogg_piano.dart';
+import 'package:tankdrum_learning/models/au_player.dart';
 import 'package:tankdrum_learning/tank_icon_icons.dart';
+
 import 'pool_player.dart';
 import 'sound_note.dart';
 
@@ -15,12 +17,15 @@ class SoundSet {
   static final fop = FlutterOggPiano();
 
   String _getNotePath(int noteIdx) {
-    final name = SoundNote.getNoteName(noteIdx);
+    final name = SoundNote.getNoteName(noteIdx).replaceFirst('#', '_');
     return 'assets/standard_notes/$id/$name.$ext';
   }
 
   _play(int noteIdx, {forceAsync = false}) {
-    PoolPlayer.playMusicSound(_getNotePath(noteIdx), forceAsync: forceAsync);
+    // PoolPlayer.playMusicSound(_getNotePath(noteIdx), forceAsync: forceAsync);
+    AuPlayer.playLocal(_getNotePath(noteIdx));
+    // OggPlayer.play(_getNotePath(noteIdx), 0);
+    // JustPlayer.playLocal(_getNotePath(noteIdx));
   }
 
   static final tankDrum = SoundSet('Tank Drum', 'tankdrum', 'mp3');
@@ -52,6 +57,13 @@ class SoundSet {
   }
 
   static loadCurrentSet() {
+    // PoolPlayer.loadSounds(getCurrentSetPaths());
+    // OggPlayer.load(getCurrentSetPaths());
+    // AuPlayer.load(getCurrentSetPaths());
+    // JustPlayer.load(getCurrentSetPaths());
+  }
+
+  static List<String> getCurrentSetPaths() {
     List<String> paths = [];
     List<int> idxList = [];
     for (int i = SoundNote.getNoteIdx('C3');
@@ -60,7 +72,7 @@ class SoundSet {
       paths.add(current._getNotePath(i));
       idxList.add(i);
     }
-    PoolPlayer.loadSounds(paths);
+    return paths;
   }
 
   static play(int soundIdx, {forceAsync = false}) {

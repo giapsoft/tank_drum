@@ -1,4 +1,5 @@
 import 'package:tankdrum_learning/models/song_sentence.dart';
+import 'package:tankdrum_learning/models/sound_set.dart';
 
 import 'song_note.dart';
 
@@ -6,15 +7,15 @@ class SongPlayer {
   List<SongSentence> sentences = [];
   List<SongNote> get notes => currentSentence?.notes ?? [];
   SongSentence? get currentSentence =>
-      currentSentenceIdx >= 0 && currentSentenceIdx < sentences.length
-          ? sentences[currentSentenceIdx]
+      _currentSentenceIdx >= 0 && _currentSentenceIdx < sentences.length
+          ? sentences[_currentSentenceIdx]
           : null;
   SongSentence? get nextSentence =>
-      currentSentenceIdx >= 0 && currentSentenceIdx < sentences.length - 1
-          ? sentences[currentSentenceIdx + 1]
+      _currentSentenceIdx >= 0 && _currentSentenceIdx < sentences.length - 1
+          ? sentences[_currentSentenceIdx + 1]
           : null;
   SongSentence? get prevSentence =>
-      currentSentenceIdx > 0 ? sentences[currentSentenceIdx - 1] : null;
+      _currentSentenceIdx > 0 ? sentences[_currentSentenceIdx - 1] : null;
 
   bool _isPlaying = false;
   Function()? onFinish;
@@ -49,7 +50,7 @@ class SongPlayer {
     sentences = songSentences ?? [];
     this.bpm = bpm ?? 100;
     _currentNoteIdx = 0;
-    _currentNoteIdx = 0;
+    _currentSentenceIdx = 0;
     _isPlaying = true;
     _run(onPlay);
     _play();
@@ -58,12 +59,12 @@ class SongPlayer {
   reset({List<SongSentence>? songSentences}) {
     sentences = songSentences ?? [];
     _currentNoteIdx = 0;
-    currentSentenceIdx = 0;
+    _currentSentenceIdx = 0;
     updateWaitingIdx();
   }
 
   int _currentNoteIdx = 0;
-  int currentSentenceIdx = 0;
+  int _currentSentenceIdx = 0;
 
   SongNote? get currentNote => _getNote(_currentNoteIdx);
   SongNote? get prevNote => _currentNoteIdx > 0
@@ -81,15 +82,16 @@ class SongPlayer {
   }
 
   _play() async {
-    if (_isPlaying && sentences.length > _currentNoteIdx) {
+    if (_isPlaying && sentences.length > _currentSentenceIdx) {
       _run(onStartNote);
-      await currentNote?.waitBpm(bpm);
-      if (!isSilence) {
-        currentNote?.play(tune: tune);
-      }
-      _run(onEndNote);
-      _nextNote();
-      _play();
+      currentNote?.wait(bpm).then((value) {
+        if (!isSilence) {
+          currentNote?.play(tune: tune);
+        }
+        _run(onEndNote);
+        _nextNote();
+        _play();
+      });
     } else {
       _run(onFinish);
       _run(stop);
@@ -97,8 +99,9 @@ class SongPlayer {
   }
 
   List<int> waitingIdx = [];
-  updateWaitingIdx() {
+  updateWaitingIdx() async {
     waitingIdx = [...(currentNote?.soundIdxList ?? [])];
+    waitingIdx.sort();
   }
 
   _nextNote() {
@@ -106,7 +109,7 @@ class SongPlayer {
       if (_currentNoteIdx < currentSentence!.notes.length - 1) {
         _currentNoteIdx++;
       } else {
-        currentSentenceIdx++;
+        _currentSentenceIdx++;
         _currentNoteIdx = 0;
         _run(onNextSentence);
       }
@@ -118,19 +121,41 @@ class SongPlayer {
   touchIdx(int idx) {
     waitingIdx.removeWhere((waiter) {
       if (waiter == idx + tune) {
-        if (onTouchedWaiter != null) {
-          onTouchedWaiter!(waiter);
-        }
+        touchWaiter(waiter);
         return true;
       }
       return false;
     });
-    while (nextNote != null && waitingIdx.isEmpty) {
+    nextIfEmpty();
+  }
+
+  touchWaiter(int waiter) {
+    if (onTouchedWaiter != null) {
+      onTouchedWaiter!(waiter);
+    }
+  }
+
+  bool playAllWaiterIfMatchLast(int idx) {
+    bool touched = false;
+    if (waitingIdx.isNotEmpty && waitingIdx.last == idx + tune) {
+      for (var waiter in waitingIdx) {
+        touchWaiter(waiter + tune);
+        SoundSet.play(waiter + tune);
+      }
+      waitingIdx.clear();
+      touched = true;
+    }
+    nextIfEmpty();
+    return touched;
+  }
+
+  nextIfEmpty() {
+    while (waitingIdx.isEmpty && nextNote != null) {
       _nextNote();
     }
   }
 
-  _run(Function()? func) {
+  _run(Function()? func) async {
     if (func != null) {
       func();
     }

@@ -5,9 +5,11 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tankdrum_learning/models/instruments/instrument.dart';
 import 'package:tankdrum_learning/models/instruments/piano.dart';
@@ -15,10 +17,7 @@ import 'package:tankdrum_learning/models/sound_note.dart';
 import 'package:tankdrum_learning/utils/math_utils.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    print(
-        MathUtils.baiToan1(a: 2, b: 2, a2: 3.225, b2: 3.225, degree: 360 + 45));
-  });
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {});
 }
 
 testFillDelta1() {

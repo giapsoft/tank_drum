@@ -13,6 +13,9 @@ part of '../player.page.dart';
   SF_<bool>(name: 'isRepeat'),
   SF_<List<InstrumentNote>>(name: 'instrumentNotes'),
   SF_<int>(name: 'tune'),
+  SF_<bool>(name: 'isSingleMode'),
+  SF_<bool>(name: 'isGameMode'),
+  SF_<String>(name: 'songName'),
 ])
 class _PlayUb extends _Play$Ub {
   double barWidth = 0.0;
@@ -21,34 +24,37 @@ class _PlayUb extends _Play$Ub {
   bool get isPortrait => height > width;
   @override
   Widget build() {
-    return SafeArea(
-      child: LayoutBuilder(builder: (context, constraints) {
-        width = constraints.maxWidth;
-        height = constraints.maxHeight;
-        barWidth = min(width, height) / 8;
+    return Obx(
+        () => state.isGameMode ? children.game.ui : buildTrainingPlayer());
+  }
 
-        return SizedBox(
-          width: constraints.maxWidth,
-          height: constraints.maxHeight,
-          child: Stack(
-            children: [
-              Positioned(
-                  top: 0,
-                  width: isPortrait ? width : barWidth,
-                  left: 0,
-                  height: isPortrait ? barWidth : height,
-                  child: Wrap(children: buildMenu())),
-              Positioned(
-                  top: isPortrait ? barWidth : 0,
-                  left: isPortrait ? 0 : barWidth,
-                  width: isPortrait ? width : width - barWidth,
-                  height: isPortrait ? height - barWidth : height,
-                  child: children.instrument.ui),
-            ],
-          ),
-        );
-      }),
-    );
+  Widget buildTrainingPlayer() {
+    return LayoutBuilder(builder: (context, constraints) {
+      width = constraints.maxWidth;
+      height = constraints.maxHeight;
+      barWidth = min(width, height) / 8;
+
+      return SizedBox(
+        width: constraints.maxWidth,
+        height: constraints.maxHeight,
+        child: Stack(
+          children: [
+            Positioned(
+                top: 0,
+                width: isPortrait ? width : barWidth,
+                left: 0,
+                height: isPortrait ? barWidth : height,
+                child: Wrap(children: buildMenu())),
+            Positioned(
+                top: isPortrait ? barWidth : 0,
+                left: isPortrait ? 0 : barWidth,
+                width: isPortrait ? width : width - barWidth,
+                height: isPortrait ? height - barWidth : height,
+                child: children.instrument.ui),
+          ],
+        ),
+      );
+    });
   }
 
   double get dialogWidth => width * 0.8;
@@ -87,7 +93,29 @@ class _PlayUb extends _Play$Ub {
       buildInstrumentButton(),
       buildSoundSetButton(),
       buildPlayModeButton(),
+      buildGameModeButton(),
+      buildSimpleModeButton(),
     ];
+  }
+
+  buildSimpleModeButton() {
+    return buildButton(Obx(() => IconButton(
+        onPressed: () {
+          state.isSingleMode = !state.isSingleMode;
+        },
+        icon: state.isSingleMode
+            ? const Icon(Icons.single_bed)
+            : const Icon(Icons.multiline_chart))));
+  }
+
+  buildGameModeButton() {
+    return Obx(() => state.sentences.isEmpty
+        ? const SizedBox()
+        : buildButton(IconButton(
+            onPressed: () {
+              state.isGameMode = true;
+            },
+            icon: const Icon(Icons.play_circle))));
   }
 
   buildPlayModeButton() {
@@ -98,7 +126,7 @@ class _PlayUb extends _Play$Ub {
                   return ListTile(
                     title: Text(name),
                     onTap: () {
-                      state.sentences = ctrl.songs[name]!;
+                      ctrl.setSong(name);
                       Get.back();
                     },
                   );
@@ -234,7 +262,8 @@ class _PlayUb extends _Play$Ub {
                     ],
                   ));
             },
-            icon: Icon(ctrl.instrument.iconData))),
+            icon:
+                Icon(Instrument.getInstrument(state.instrumentName).iconData))),
         padding: 4.0);
   }
 }

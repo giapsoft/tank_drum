@@ -10,23 +10,25 @@ part of 'player.page.dart';
 class PlayerBuilder extends Player$Builder {
   @override
   Widget build() {
-    return Scaffold(
-      appBar: ctrl.isViewingPlayer()
-          ? null
-          : AppBar(
-              title: Obx(() => Text(state.title)),
-              actions: [
-                IconButton(
-                  onPressed: ctrl.hitViewSongList,
-                  icon: const Icon(Icons.queue_music),
-                ),
-                IconButton(
-                  onPressed: ctrl.hitViewConfig,
-                  icon: const Icon(Icons.build),
-                )
-              ],
-            ),
-      body: ctrl.body,
+    return SafeArea(
+      child: Scaffold(
+        appBar: ctrl.isViewingPlayer()
+            ? null
+            : AppBar(
+                title: Obx(() => Text(state.title)),
+                actions: [
+                  IconButton(
+                    onPressed: ctrl.hitViewSongList,
+                    icon: const Icon(Icons.queue_music),
+                  ),
+                  IconButton(
+                    onPressed: ctrl.hitViewConfig,
+                    icon: const Icon(Icons.build),
+                  )
+                ],
+              ),
+        body: ctrl.body,
+      ),
     );
   }
 }

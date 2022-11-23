@@ -42,7 +42,6 @@ class Kalimba extends Instrument {
     final a = (maxHeight - minHeight) / pow(halfNotes, 2);
     for (int i = 1; i <= totalNotes; i++) {
       double height = a * pow(i, 2) + minHeight;
-      debugPrint('height: $height, a $a');
       if (i > halfNotes) {
         final symetricI = halfNotes - (i - halfNotes) - 1;
         final symetricHeight = noteList[symetricI].height;
@@ -104,7 +103,7 @@ class Kalimba extends Instrument {
   String get instrumentName => name;
 
   @override
-  int get defaultNoteCount => 21;
+  int get defaultNoteCount => 17;
 
   @override
   List<List<int>> playableNoteSet(Set<int> soundIdxSet) {

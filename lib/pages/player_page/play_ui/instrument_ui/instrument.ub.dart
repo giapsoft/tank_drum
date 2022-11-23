@@ -13,7 +13,9 @@ class _InstrumentUb extends _Instrument$Ub {
       ctrl.updateSize(constraints);
       return Listener(
         onPointerDown: ((event) {
-          pointers.synchronized(() => pointers++);
+          pointers.synchronized(() {
+            pointers++;
+          });
           for (var note in ctrl.noteUbs.reversed) {
             if (note.ctrl.isInBody(event.localPosition)) {
               note.ctrl.doSwipedIn(event.localPosition);
@@ -25,7 +27,7 @@ class _InstrumentUb extends _Instrument$Ub {
           pointers.synchronized(() {
             pointers--;
             if (pointers == 0) {
-              for (var note in ctrl.noteUbs.reversed) {
+              for (var note in ctrl.noteUbs) {
                 note.ctrl.doSwipedOut();
               }
             } else {
@@ -39,21 +41,23 @@ class _InstrumentUb extends _Instrument$Ub {
           });
         }),
         onPointerMove: (details) {
-          final pos = details.localPosition;
-          final idxList = <int>[];
-          for (var note in ctrl.noteUbs.reversed) {
-            if (note.ctrl.isInBody(pos)) {
-              note.ctrl.doSwipedIn(pos);
-              idxList.add(note.currentSoundIdx);
-              break;
+          pointers.synchronized(() {
+            final pos = details.localPosition;
+            final idxList = <int>[];
+            for (var note in ctrl.noteUbs.reversed) {
+              if (note.ctrl.isInBody(pos)) {
+                note.ctrl.doSwipedIn(pos);
+                idxList.add(note.currentSoundIdx);
+                break;
+              }
             }
-          }
-          for (var note in ctrl.noteUbs.reversed) {
-            if (!idxList.contains(note.currentSoundIdx) &&
-                note.ctrl.isInBorder(pos)) {
-              note.ctrl.doSwipedOut();
+            for (var note in ctrl.noteUbs.reversed) {
+              if (!idxList.contains(note.currentSoundIdx) &&
+                  note.ctrl.isInBorder(pos)) {
+                note.ctrl.doSwipedOut();
+              }
             }
-          }
+          });
         },
         child: Stack(
           children: [

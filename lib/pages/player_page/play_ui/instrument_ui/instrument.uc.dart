@@ -16,8 +16,7 @@ class _InstrumentUc extends _Instrument$Ctrl {
       noteUbs.add(_InstrumentNoteUb(
         this,
         onTouchPlay: (noteUb) {
-          SoundSet.play(noteUb.currentSoundIdx);
-          parent.ctrl.touchIdx(noteUb.currentSoundIdx);
+          parent.ctrl.touchNote(noteUb);
         },
         onHold: (noteUb) {
           SoundSet.play(noteUb.currentSoundIdx, forceAsync: true);
@@ -47,6 +46,11 @@ class _InstrumentUc extends _Instrument$Ctrl {
   }
 
   _noteAction(List<int> soundIdxList, Function(_InstrumentNoteUb) noteAction) {
+    if (playState.isSingleMode) {
+      soundIdxList.sort();
+      noteAction(getNoteBySoundIdx(soundIdxList.last));
+      return;
+    }
     for (var idx in soundIdxList) {
       noteAction(getNoteBySoundIdx(idx));
     }

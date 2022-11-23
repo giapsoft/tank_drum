@@ -1,137 +1,208 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'package:tankdrum_learning/widgets/bounce_button.dart';
 
-void main(List<String> args) {
-  runApp(MaterialApp(home: OverlayTesting()));
+void main() {
+  runApp(const AnimatedListSample());
 }
 
-class OverlayTesting extends StatefulWidget {
-  const OverlayTesting({Key? key}) : super(key: key);
+class AnimatedListSample extends StatefulWidget {
+  const AnimatedListSample({super.key});
 
   @override
-  State<OverlayTesting> createState() => _OverlayTestingState();
+  State<AnimatedListSample> createState() => _AnimatedListSampleState();
 }
 
-class _OverlayTestingState extends State<OverlayTesting> {
+class _AnimatedListSampleState extends State<AnimatedListSample> {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  late ListModel<int> _list;
+  int? _selectedItem;
+  late int
+      _nextItem; // The next item inserted when the user presses the '+' button.
+
+  @override
+  void initState() {
+    super.initState();
+    _list = ListModel<int>(
+      listKey: _listKey,
+      initialItems: <int>[0, 1, 2],
+      removedItemBuilder: _buildRemovedItem,
+    );
+    _nextItem = 3;
+  }
+
+  // Used to build list items that haven't been removed.
+  Widget _buildItem(
+      BuildContext context, int index, Animation<double> animation) {
+    return CardItem(
+      animation: animation,
+      item: _list[index],
+      selected: _selectedItem == _list[index],
+      onTap: () {
+        setState(() {
+          _selectedItem = _selectedItem == _list[index] ? null : _list[index];
+        });
+      },
+    );
+  }
+
+  // Used to build an item after it has been removed from the list. This
+  // method is needed because a removed item remains visible until its
+  // animation has completed (even though it's gone as far this ListModel is
+  // concerned). The widget will be used by the
+  // [AnimatedListState.removeItem] method's
+  // [AnimatedListRemovedItemBuilder] parameter.
+  Widget _buildRemovedItem(
+      int item, BuildContext context, Animation<double> animation) {
+    return CardItem(
+      animation: animation,
+      item: item,
+      // No gesture detector here: we don't want removed items to be interactive.
+    );
+  }
+
+  // Insert the "next item" into the list model.
+  void _insert() {
+    final int index =
+        _selectedItem == null ? _list.length : _list.indexOf(_selectedItem!);
+    _list.insert(index, _nextItem++);
+  }
+
+  // Remove the selected item from the list model.
+  void _remove() {
+    if (_selectedItem != null) {
+      _list.removeAt(_list.indexOf(_selectedItem!));
+      setState(() {
+        _selectedItem = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // ignore: prefer_const_literals_to_create_immutables
-      body: Stack(children: [
-        Positioned(
-            top: 100,
-            left: 100,
-            width: 50,
-            height: 200,
-            child: BounceButton(
-              NoteBuilder(),
-              onTrigger: () {},
-            )),
-      ]),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('AnimatedList'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add_circle),
+              onPressed: _insert,
+              tooltip: 'insert a new item',
+            ),
+            IconButton(
+              icon: const Icon(Icons.remove_circle),
+              onPressed: _remove,
+              tooltip: 'remove the selected item',
+            ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: AnimatedList(
+            key: _listKey,
+            initialItemCount: _list.length,
+            itemBuilder: _buildItem,
+            scrollDirection: Axis.horizontal,
+          ),
+        ),
+      ),
     );
   }
 }
 
-class NoteBuilder extends StatefulWidget {
-  const NoteBuilder({Key? key}) : super(key: key);
+typedef RemovedItemBuilder<T> = Widget Function(
+    T item, BuildContext context, Animation<double> animation);
 
-  @override
-  State<NoteBuilder> createState() => _NoteBuilderState();
+/// Keeps a Dart [List] in sync with an [AnimatedList].
+///
+/// The [insert] and [removeAt] methods apply to both the internal list and
+/// the animated list that belongs to [listKey].
+///
+/// This class only exposes as much of the Dart List API as is needed by the
+/// sample app. More list methods are easily added, however methods that
+/// mutate the list must make the same changes to the animated list in terms
+/// of [AnimatedListState.insertItem] and [AnimatedList.removeItem].
+class ListModel<E> {
+  ListModel({
+    required this.listKey,
+    required this.removedItemBuilder,
+    Iterable<E>? initialItems,
+  }) : _items = List<E>.from(initialItems ?? <E>[]);
+
+  final GlobalKey<AnimatedListState> listKey;
+  final RemovedItemBuilder<E> removedItemBuilder;
+  final List<E> _items;
+
+  AnimatedListState? get _animatedList => listKey.currentState;
+
+  void insert(int index, E item) {
+    _items.insert(index, item);
+    _animatedList!.insertItem(index);
+  }
+
+  E removeAt(int index) {
+    final E removedItem = _items.removeAt(index);
+    if (removedItem != null) {
+      _animatedList!.removeItem(
+        index,
+        (BuildContext context, Animation<double> animation) {
+          return removedItemBuilder(removedItem, context, animation);
+        },
+      );
+    }
+    return removedItem;
+  }
+
+  int get length => _items.length;
+
+  E operator [](int index) => _items[index];
+
+  int indexOf(E item) => _items.indexOf(item);
 }
 
-class _NoteBuilderState extends State<NoteBuilder> {
-  late BoxConstraints constraints;
-  List<Tut>? _tuts;
-  List<Tut> get tuts => _tuts ??= List.generate(10, (_) => Tut(constraints));
-  int currentIdx = 0;
+/// Displays its integer item as 'item N' on a Card whose color is based on
+/// the item's value.
+///
+/// The text is displayed in bright green if [selected] is
+/// true. This widget's height is based on the [animation] parameter, it
+/// varies from 0 to 128 as the animation varies from 0.0 to 1.0.
+class CardItem extends StatelessWidget {
+  const CardItem({
+    super.key,
+    this.onTap,
+    this.selected = false,
+    required this.animation,
+    required this.item,
+  }) : assert(item >= 0);
 
-  trigger() {
-    tuts[currentIdx++].trigger();
-    if (currentIdx >= tuts.length - 1) {
-      currentIdx = 0;
-    }
-  }
+  final Animation<double> animation;
+  final VoidCallback? onTap;
+  final int item;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      this.constraints = constraints;
-      return Container(
-        clipBehavior: Clip.hardEdge,
-        width: constraints.maxWidth,
-        height: constraints.maxHeight,
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(200),
-            bottomRight: Radius.circular(200),
-          ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              bottom: 0,
-              height: constraints.maxWidth,
-              width: constraints.maxWidth,
-              child: Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                        color: Color.fromARGB(69, 0, 0, 0), width: 3)),
+    TextStyle textStyle = Theme.of(context).textTheme.headline4!;
+    if (selected) {
+      textStyle = textStyle.copyWith(color: Colors.lightGreenAccent[400]);
+    }
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: SizeTransition(
+        sizeFactor: animation,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: SizedBox(
+            height: 80.0,
+            width: 100.0,
+            child: Card(
+              color: Colors.primaries[item % Colors.primaries.length],
+              child: Center(
+                child: Text('Item $item', style: textStyle),
               ),
             ),
-            ...tuts,
-          ],
+          ),
         ),
-      );
-    });
-  }
-}
-
-class Tut extends StatefulWidget {
-  Tut(this.constraint, {Key? key}) : super(key: key);
-  final BoxConstraints constraint;
-  final List<Function()> _trigger = [];
-  trigger() {
-    for (var t in _trigger) {
-      t();
-    }
-  }
-
-  @override
-  State<Tut> createState() => _TutState();
-}
-
-class _TutState extends State<Tut> {
-  Duration waitingTime = Duration(seconds: 2);
-
-  trigger() {
-    setState(() {
-      isRunning = true;
-      Future.delayed(waitingTime).then((value) {
-        setState(() {
-          isRunning = false;
-        });
-      });
-    });
-  }
-
-  bool isRunning = false;
-  @override
-  Widget build(BuildContext context) {
-    widget._trigger.clear();
-    widget._trigger.add(trigger);
-    return AnimatedPositioned(
-      duration: isRunning ? waitingTime : Duration(seconds: 0),
-      bottom: isRunning ? 0 : widget.constraint.maxHeight,
-      height: widget.constraint.maxWidth,
-      width: widget.constraint.maxWidth,
-      child: Container(
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.yellow, width: 3)),
       ),
     );
   }
