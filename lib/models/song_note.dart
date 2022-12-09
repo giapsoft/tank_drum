@@ -3,17 +3,17 @@ import 'package:tankdrum_learning/models/au_player.dart';
 import 'sound_note.dart';
 import 'sound_set.dart';
 
-class SongNote {
+class SNote {
   int beats = 1;
   int milliseconds = 0;
   int startPoint = 0;
   String name = '';
-  SongNote(String soundNames, [this.beats = 1])
+  SNote(String soundNames, [this.beats = 1])
       : soundIdxList =
             soundNames.split(',').map((e) => SoundNote.getNoteIdx(e)).toList();
   List<int> soundIdxList = [];
 
-  SongNote.timed({
+  SNote.timed({
     this.name = '',
     this.milliseconds = 0,
     this.startPoint = 0,

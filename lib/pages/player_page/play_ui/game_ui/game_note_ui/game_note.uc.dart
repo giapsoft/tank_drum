@@ -34,7 +34,7 @@ class _GameNoteUc extends _GameNote$Ctrl {
     holdingTut?.touchUp();
   }
 
-  trigger(SongNote note, Function(_NoteTutUb) callback) {
+  trigger(SNote note, Function(_NoteTutUb) callback) {
     tuts.add(tuts.removeAt(0)..trigger(note, callback));
   }
 }

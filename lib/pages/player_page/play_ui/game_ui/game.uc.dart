@@ -161,7 +161,7 @@ class _GameUc extends _Game$Ctrl {
   }
 
   prepareHardCodedSong() {
-    AuPlayer.play('songs/${parent.state.songName}.mp3', _backgroundPlayer)
+    AuPlayer.playAsset('songs/${parent.state.songName}.mp3', _backgroundPlayer)
         .then((value) {
       final hardCodedPlayingNotes = parent.state.sentences.first.notes.iterator;
       calculator.triggerMoment = DateTime.now().millisecondsSinceEpoch -
@@ -171,7 +171,7 @@ class _GameUc extends _Game$Ctrl {
     });
   }
 
-  startHardCodedSong(Iterator<SongNote> hardCodedPlayingNotes) {
+  startHardCodedSong(Iterator<SNote> hardCodedPlayingNotes) {
     if (state.isPlaying && hardCodedPlayingNotes.moveNext()) {
       Future.delayed(
               calculator.delayNote(hardCodedPlayingNotes.current.startPoint))
@@ -182,7 +182,7 @@ class _GameUc extends _Game$Ctrl {
     }
   }
 
-  trigger(SongNote? songNote) async {
+  trigger(SNote? songNote) async {
     if (songNote == null || gameNotes.isEmpty) {
       return;
     }
@@ -234,9 +234,7 @@ class _GameUc extends _Game$Ctrl {
     state.isPlaying = false;
     _flexPlayer.stop();
     _backgroundPlayer.stop();
-    for (var element in lyricStages) {
-      element.reset();
-    }
+
     currentStageIdx = 0;
   }
 
@@ -249,6 +247,9 @@ class _GameUc extends _Game$Ctrl {
     state.totalPoint = 0;
     state.currentPoint = 0;
     state.newPoint = false;
+    for (var element in lyricStages) {
+      element.reset();
+    }
   }
 
   String get pointSummary => [
@@ -295,7 +296,7 @@ class _GameUc extends _Game$Ctrl {
   }
 
   final lyricStages = <_LyricsUb>[];
-  final lyricQueue = <SongNote>[];
+  final lyricQueue = <SNote>[];
   initLyrics() {
     for (int i = 0; i < 8; i++) {
       lyricStages.add(_LyricsUb(i, triggerNextLyricNote));
@@ -315,7 +316,7 @@ class _GameUc extends _Game$Ctrl {
         .iterator);
   }
 
-  startLyricNotes(Iterator<SongNote> hardCodedLyricNotes) {
+  startLyricNotes(Iterator<SNote> hardCodedLyricNotes) {
     if (state.isPlaying && hardCodedLyricNotes.moveNext()) {
       Future.delayed(calculator
               .delayNote(hardCodedLyricNotes.current.startPoint - 2000))
@@ -334,7 +335,7 @@ class _GameUc extends _Game$Ctrl {
   }
 
   int currentStageIdx = 0;
-  triggerLyric(SongNote note) {
+  triggerLyric(SNote note) {
     if (lyricStages.every((element) => element.isFree())) {
       currentStageIdx = 0;
     }

@@ -1,10 +1,11 @@
 import 'package:g_entities/entities.dart';
+import 'song_note.dart';
 
 part '_generated/song._.dart';
 
 @Entity_(fields: [
   F_<String>('name'),
-  F_<int>('bpm'),
+  E_<SongNote>.list('songNotes'),
 ])
 class Song extends Song$Auto {}
 

@@ -12,22 +12,21 @@ class PlayerBuilder extends Player$Builder {
   Widget build() {
     return SafeArea(
       child: Scaffold(
-        appBar: ctrl.isViewingPlayer()
-            ? null
-            : AppBar(
-                title: Obx(() => Text(state.title)),
-                actions: [
-                  IconButton(
-                    onPressed: ctrl.hitViewSongList,
-                    icon: const Icon(Icons.queue_music),
-                  ),
-                  IconButton(
-                    onPressed: ctrl.hitViewConfig,
-                    icon: const Icon(Icons.build),
-                  )
-                ],
-              ),
-        body: ctrl.body,
+        appBar: AppBar(
+          title: Obx(() => Text(state.title)),
+          actions: [
+            IconButton(
+              onPressed: ctrl.hitViewSongList,
+              icon: const Icon(Icons.queue_music),
+            ),
+            IconButton(
+              onPressed: ctrl.hitViewConfig,
+              icon: const Icon(Icons.build),
+            )
+          ],
+        ),
+        body: Obx(() => ctrl.body!),
+        drawer: SideBar(),
       ),
     );
   }

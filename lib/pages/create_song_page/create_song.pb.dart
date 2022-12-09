@@ -2,7 +2,7 @@ part of 'create_song.page.dart';
 
 @Page_(state: [
   SF_<int>(name: 'currentNoteIdx'),
-  SF_<List<SongNote>>(name: 'songNotes'),
+  SF_<List<SNote>>(name: 'songNotes'),
   SF_<int>(name: 'activeNoteBeats'),
   SF_<int>(name: 'bpm', init: 150),
   SF_<bool>(name: 'isPlayingFromCurrentNote'),

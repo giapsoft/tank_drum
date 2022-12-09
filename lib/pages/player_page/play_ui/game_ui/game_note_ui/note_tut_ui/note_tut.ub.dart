@@ -32,8 +32,8 @@ class _NoteTutUb extends _NoteTut$Ub {
 
   GameCalculator get calculator => gameNote.game.ctrl.calculator;
 
-  late SongNote note;
-  trigger(SongNote note, Function(_NoteTutUb) callback) {
+  late SNote note;
+  trigger(SNote note, Function(_NoteTutUb) callback) {
     this.note = note;
     milliseconds = note.milliseconds;
     state.isRunning = true;

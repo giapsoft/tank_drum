@@ -1,8 +1,26 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:g_components/components.dart';
+import 'package:g_entities/entities.dart';
+import 'package:g_file_storage/storage.dart';
 import 'package:g_pages/pages.dart';
 import 'package:get/get.dart';
+import 'package:tankdrum_learning/entities/perfect_song.dart';
+import 'package:tankdrum_learning/entities/root.dart';
+import 'package:tankdrum_learning/entities/silence_node.dart';
+import 'package:tankdrum_learning/entities/song.dart';
+import 'package:tankdrum_learning/entities/song_note.dart';
+import 'package:tankdrum_learning/widgets/menu_skin.dart';
 import '../../widgets/side_bar.dart';
 
+part '../_generated/my_songs_page/my_songs._.dart';
+part '../_generated/my_songs_page/song_details_ui/song_details._.dart';
+part '../_generated/my_songs_page/song_list_ui/song_list._.dart';
 part 'my_songs.pb.dart';
 part 'my_songs.pc.dart';
-part '../_generated/my_songs_page/my_songs._.dart';
+part 'song_details_ui/song_details.ub.dart';
+part 'song_details_ui/song_details.uc.dart';
+part 'song_list_ui/song_list.ub.dart';
+part 'song_list_ui/song_list.uc.dart';

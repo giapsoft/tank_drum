@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:tekartik_midi/midi.dart';
+import 'package:tekartik_midi/midi_parser.dart';
 
 class SoundNameText extends StatelessWidget {
   const SoundNameText(this.soundName,

@@ -37,7 +37,7 @@ class _GameUb extends _Game$Ub {
 
   buildLyrics() {
     return Obx(() => !state.isDisplayLyrics
-        ? SizedBox()
+        ? const SizedBox()
         : Positioned(
             height: 64,
             width: maxWidth,

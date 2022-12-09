@@ -3,9 +3,10 @@ part of '../../../player.page.dart';
 @Ui_(isSingle: true, state: [
   SF_<String>(name: 'state', init: 'free'),
   SF_<String>(name: 'lyric'),
+  SF_<bool>(name: 'isActive'),
 ])
 class _LyricsUb extends _Lyrics$Ub {
-  SongNote note = SongNote.timed();
+  SNote note = SNote.timed();
   static const free = 'free';
   static const start = 'start';
   static const outstanding = 'outstanding';
@@ -17,8 +18,9 @@ class _LyricsUb extends _Lyrics$Ub {
 
   int triggerMoment = 0;
 
-  setNote(SongNote songNote) {
+  setNote(SNote songNote) {
     note = songNote;
+    state.isActive = true;
     state.state = start;
     state.lyric = note.name;
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -28,9 +30,10 @@ class _LyricsUb extends _Lyrics$Ub {
   }
 
   reset() {
-    note = SongNote.timed();
+    note = SNote.timed();
     state.state = free;
     state.lyric = '';
+    state.isActive = false;
   }
 
   double get fontSize {
@@ -41,20 +44,20 @@ class _LyricsUb extends _Lyrics$Ub {
     return [
       100,
       500,
-      100,
+      500,
       note.milliseconds + 1000
     ][allState.indexOf(state.state)];
   }
 
   double get opacity {
-    return [0, 0.90, 0.99, 0.1][currentStateIdx].toDouble();
+    return [0, 1, 0.99, 0.001][currentStateIdx].toDouble();
   }
 
   FontWeight get fontWeight {
     return [
       FontWeight.normal,
       FontWeight.normal,
-      FontWeight.bold,
+      FontWeight.w900,
       FontWeight.normal
     ][allState.indexOf(state.state)];
   }
@@ -79,46 +82,48 @@ class _LyricsUb extends _Lyrics$Ub {
     ][currentStateIdx];
   }
 
-  get curve => Curves.decelerate;
+  bool isFree() {
+    return state.state == free;
+  }
+
+  get curve => Curves.easeInOutBack;
 
   @override
   Widget build() {
     return Obx(
-      () => AnimatedSlide(
-        curve: curve,
-        offset: offset,
-        duration: Duration(milliseconds: milliseconds),
-        child: Obx(() => AnimatedOpacity(
-            curve: curve,
-            opacity: opacity,
-            duration: Duration(milliseconds: milliseconds),
-            onEnd: () {
-              if (state.state == end) {
-                state.state = free;
-                onFree(this);
-              } else if (state.state == outstanding) {
-                state.state = end;
-              }
-            },
-            child: Obx(
-              () => FittedBox(
-                child: AnimatedDefaultTextStyle(
-                    curve: curve,
-                    maxLines: 1,
-                    style: TextStyle(
-                        overflow: TextOverflow.visible,
-                        fontSize: 16,
-                        fontWeight: fontWeight,
-                        color: color),
-                    duration: Duration(milliseconds: milliseconds),
-                    child: Obx(() => Text(state.lyric))),
-              ),
-            ))),
-      ),
+      () => !state.isActive
+          ? const SizedBox()
+          : AnimatedSlide(
+              curve: curve,
+              offset: offset,
+              duration: Duration(milliseconds: milliseconds),
+              child: Obx(() => AnimatedOpacity(
+                  curve: curve,
+                  opacity: opacity,
+                  duration: Duration(milliseconds: milliseconds),
+                  onEnd: () {
+                    if (state.state == end) {
+                      state.state = free;
+                      onFree(this);
+                    } else if (state.state == outstanding) {
+                      state.state = end;
+                    }
+                  },
+                  child: Obx(
+                    () => FittedBox(
+                      child: AnimatedDefaultTextStyle(
+                          curve: curve,
+                          maxLines: 1,
+                          style: TextStyle(
+                              overflow: TextOverflow.visible,
+                              fontSize: 16,
+                              fontWeight: fontWeight,
+                              color: color),
+                          duration: Duration(milliseconds: milliseconds),
+                          child: Obx(() => Text(state.lyric))),
+                    ),
+                  ))),
+            ),
     );
-  }
-
-  bool isFree() {
-    return state.state == free;
   }
 }

@@ -195,7 +195,7 @@ class _CreateSongPc extends _CreateSong$Ctrl {
     state.activeNoteBeats = -1;
   }
 
-  SongNote getSongNote(_NoteUb note) {
+  SNote getSongNote(_NoteUb note) {
     return state.songNotes[note.idx];
   }
 
@@ -274,7 +274,7 @@ class _CreateSongPc extends _CreateSong$Ctrl {
     }
   }
 
-  List<SongNote> getIndependentNotesInCurrentPage() {
+  List<SNote> getIndependentNotesInCurrentPage() {
     int addIdx = notes.length;
     if (!notes.last.state.linkType.isNone()) {
       final lastNote = notes.last;

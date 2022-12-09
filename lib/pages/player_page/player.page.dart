@@ -22,6 +22,7 @@ import '../../models/song_sentence.dart';
 import '../../models/sound_set.dart';
 import '../../tank_icon_icons.dart';
 import '../../utils/math_utils.dart';
+import '../../widgets/side_bar.dart';
 import 'play_ui/game_ui/game_calculator.dart';
 
 part '../_generated/player_page/config_ui/config._.dart';

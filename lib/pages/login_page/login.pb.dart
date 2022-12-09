@@ -1,7 +1,10 @@
 part of 'login.page.dart';
 
-@Page_()
+@Page_(skins: [MenuSkin])
 class LoginBuilder extends Login$Builder {
+  @override
+  String get title => 'Login';
+
   @override
   Widget build() {
     return Column(

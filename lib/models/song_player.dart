@@ -5,7 +5,7 @@ import 'song_note.dart';
 
 class SongPlayer {
   List<SongSentence> sentences = [];
-  List<SongNote> get notes => currentSentence?.notes ?? [];
+  List<SNote> get notes => currentSentence?.notes ?? [];
   SongSentence? get currentSentence =>
       _currentSentenceIdx >= 0 && _currentSentenceIdx < sentences.length
           ? sentences[_currentSentenceIdx]
@@ -66,18 +66,18 @@ class SongPlayer {
   int _currentNoteIdx = 0;
   int _currentSentenceIdx = 0;
 
-  SongNote? get currentNote => _getNote(_currentNoteIdx);
-  SongNote? get prevNote => _currentNoteIdx > 0
+  SNote? get currentNote => _getNote(_currentNoteIdx);
+  SNote? get prevNote => _currentNoteIdx > 0
       ? _getNote(_currentNoteIdx - 1)
       : prevSentence?.lastNote;
-  SongNote? get nextNote {
+  SNote? get nextNote {
     if (_currentNoteIdx < (currentSentence?.notes.length ?? 0) - 1) {
       return _getNote(_currentNoteIdx + 1);
     }
     return nextSentence?.firstNote;
   }
 
-  SongNote? _getNote(int idx) {
+  SNote? _getNote(int idx) {
     return (notes.isNotEmpty && notes.length > idx) ? notes[idx] : null;
   }
 

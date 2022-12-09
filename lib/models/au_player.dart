@@ -15,10 +15,14 @@ class AuPlayer {
     _mainPlayer.play(uri.toString(), isLocal: true);
   }
 
-  static Future<void> play(String path, AudioPlayer? player) async {
-    player ??= _mainPlayer;
+  static Future<void> playAsset(String path, AudioPlayer? player) async {
     final uri = await _mainCache.load(path);
-    await player.setUrl(uri.toString(), isLocal: true);
+    await playLocalPath(uri.toString(), player);
+  }
+
+  static Future<void> playLocalPath(String path, AudioPlayer? player) async {
+    player ??= _mainPlayer;
+    await player.setUrl(path, isLocal: true);
     await player.setVolume(0);
     await player.resume();
     await Future.delayed(const Duration(milliseconds: 200));

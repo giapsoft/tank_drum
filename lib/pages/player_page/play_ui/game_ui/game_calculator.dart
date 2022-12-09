@@ -72,8 +72,6 @@ class GameCalculator {
     final perfectMoment = triggerMoment + startPoint;
     final deltaMoment = (touchedDownMoment - perfectMoment).abs();
     final runnedRate = deltaMoment / runMilliseconds;
-    // print(
-    //     'deltaMoment: $deltaMoment, runnedRate: $runnedRate, minPointRate: $minPointRate, maxPointRate: $maxPointRate, avgPointRate: $avgPointRate');
     int point = 0;
     if (runnedRate < minPointRate || runnedRate > maxPointRate) {
       point = 0;
