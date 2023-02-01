@@ -41,7 +41,7 @@ class TankDrumApp extends RunningApp {
 
   initApp() async {
     GEntity.instance.entityCreator = ECreator();
-    GEntity.instance.rootEntity = Root.instance;
+    GEntity.instance.rootEntity = () => Root();
     if (!GetPlatform.isWeb) {
       await Firebase.initializeApp();
     }
